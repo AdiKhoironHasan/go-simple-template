@@ -1,6 +1,6 @@
 package service
 
-import "go-simple/repository"
+import "go-simple-template/repository"
 
 type service struct {
 	repo repository.RepositoryInterface

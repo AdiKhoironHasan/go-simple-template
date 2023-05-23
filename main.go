@@ -2,12 +2,12 @@ package main
 
 import (
 	"fmt"
-	"go-simple/config"
-	"go-simple/database"
-	"go-simple/handler"
-	"go-simple/repository"
-	"go-simple/router"
-	"go-simple/service"
+	"go-simple-template/config"
+	"go-simple-template/database"
+	"go-simple-template/handler"
+	"go-simple-template/repository"
+	"go-simple-template/router"
+	"go-simple-template/service"
 	"net/http"
 
 	"github.com/rs/zerolog/log"
@@ -24,7 +24,7 @@ func main() {
 			DBhost:   "localhost",
 			DBport:   "3306",
 			DBuser:   "root",
-			DBname:   "go-simple",
+			DBname:   "go-simple-template",
 		},
 	}
 

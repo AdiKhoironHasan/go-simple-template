@@ -1,7 +1,7 @@
 package handler
 
 import (
-	"go-simple/service"
+	"go-simple-template/service"
 
 	"github.com/labstack/echo/v4"
 )

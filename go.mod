@@ -1,4 +1,4 @@
-module go-simple
+module go-simple-template
 
 go 1.20
 

@@ -3,7 +3,7 @@ package database
 import (
 	"errors"
 	"fmt"
-	"go-simple/config"
+	"go-simple-template/config"
 
 	"gorm.io/driver/mysql"
 	"gorm.io/gorm"

@@ -1,7 +1,7 @@
 package router
 
 import (
-	"go-simple/handler"
+	"go-simple-template/handler"
 
 	"github.com/labstack/echo/v4"
 	"github.com/labstack/echo/v4/middleware"
