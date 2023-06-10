@@ -11,26 +11,20 @@ import (
 	"io"
 	"net/http"
 	"net/http/httptest"
-	"os"
-	"path/filepath"
 	"strings"
 	"testing"
 
+	"github.com/joho/godotenv"
 	"github.com/stretchr/testify/assert"
 )
 
 func TestPing(t *testing.T) {
 	m, repoMock := CreateMock()
 
-	workDir, err := os.Getwd()
-	if err != nil {
-		panic(err)
-	}
+	err := godotenv.Load("../.env")
+	assert.NoError(t, err)
 
-	// mundur 1 direktori ke belakang as ../
-	rootDir := filepath.Dir(workDir)
-
-	cfg := config.NewConfig(rootDir)
+	cfg := config.NewConfig()
 
 	service := service.NewService(repoMock)
 	handler := handler.NewHandler(service)

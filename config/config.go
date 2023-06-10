@@ -2,27 +2,10 @@ package config
 
 import (
 	"os"
-	"path/filepath"
 	"strconv"
-
-	"github.com/joho/godotenv"
-	"github.com/rs/zerolog/log"
 )
 
-func NewConfig(workDir string) *Config {
-	err := os.Chdir(workDir)
-	if err != nil {
-		log.Fatal().Err(err).Msg("Failed change to workspace directory")
-		panic(err)
-	}
-
-	envPath := filepath.Join(workDir, ".env")
-
-	if err := godotenv.Load(envPath); err != nil {
-		log.Fatal().Err(err).Msg("Failed to load .env file")
-		panic(err)
-	}
-
+func NewConfig() *Config {
 	return &Config{
 		AppConfig: AppConfig{
 			AppHost: getEnv("APP_HOST", "localhost"),
@@ -36,12 +19,22 @@ func NewConfig(workDir string) *Config {
 			DBpassword: getEnv("DB_PASSWORD", ""),
 			DBname:     getEnv("DB_NAME", "go-simple-template"),
 		},
+		CacheConfig: CacheConfig{
+			CacheDriver: getEnv("CACHE_DRIVER", "redis"),
+			Redis: Redis{
+				RedisHost:     getEnv("REDIS_HOST", "localhost"),
+				RedisPort:     getEnvAsInt("REDIS_PORT", 6379),
+				RedisDB:       getEnvAsInt("REDIS_DB", 0),
+				RedisPassword: getEnv("REDIS_PASSWORD", ""),
+			},
+		},
 	}
 }
 
 type Config struct {
 	AppConfig
 	DBconfig
+	CacheConfig
 }
 
 type AppConfig struct {
@@ -56,6 +49,17 @@ type DBconfig struct {
 	DBuser     string
 	DBname     string
 	DBpassword string
+}
+
+type CacheConfig struct {
+	CacheDriver string
+	Redis       Redis
+}
+type Redis struct {
+	RedisHost     string
+	RedisPort     int
+	RedisDB       int
+	RedisPassword string
 }
 
 func getEnv(key string, defaultVal string) string {
