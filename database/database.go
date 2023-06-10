@@ -48,7 +48,7 @@ func NewConnection(cfg *config.Config) (*gorm.DB, error) {
 			cfg.DBconfig.DBport,
 		)
 
-		dbConn, err := gorm.Open(postgres.Open(dsn), gormConfig)
+		dbConn, err := gorm.Open(postgres.Open("host=localhost user=postgres password=postgres dbname=postgres port=5432 sslmode=disable"), gormConfig)
 		if err != nil {
 			return nil, err
 		}
