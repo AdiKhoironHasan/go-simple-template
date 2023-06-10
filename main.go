@@ -5,13 +5,12 @@ import (
 	"go-simple-template/config"
 	"go-simple-template/database"
 	"go-simple-template/handler"
+	"go-simple-template/pkg/logger"
 	"go-simple-template/repository"
 	"go-simple-template/router"
 	"go-simple-template/server"
 	"go-simple-template/service"
 	"os"
-
-	"github.com/rs/zerolog/log"
 )
 
 func main() {
@@ -20,6 +19,8 @@ func main() {
 		panic(err)
 	}
 	cfg := config.NewConfig(workDir)
+
+	log := logger.NewLogger().Logger.With().Str("pkg", "main").Logger()
 
 	db, err := database.NewConnection(cfg)
 	if err != nil {
@@ -33,6 +34,6 @@ func main() {
 
 	server := server.NewServer(cfg, router)
 
-	log.Info().Msg(fmt.Sprintf("Server started at  http://%s:%d", cfg.AppHost, cfg.AppPort))
+	log.Info().Msg(fmt.Sprintf("Server started at http://%s:%d", cfg.AppHost, cfg.AppPort))
 	log.Fatal().Err(server.ListenAndServe()).Msg("Failed to start the server")
 }

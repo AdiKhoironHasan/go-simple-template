@@ -18,7 +18,7 @@ go mod tidy
 ```
 5. Run the program
 ```
-go run *.go
+go run main.go
 ```
 6. Test liveness
 ```
