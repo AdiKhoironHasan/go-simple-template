@@ -1,19 +1,15 @@
 package service
 
 import (
-	"go-simple-template/repository"
+	"go-simple-template/test"
 	"testing"
 
 	"github.com/stretchr/testify/assert"
-	"github.com/stretchr/testify/mock"
-)
-
-var (
-	m        = mock.Mock{}
-	repoMock = repository.NewRepositoryMock(&m)
 )
 
 func TestPing(t *testing.T) {
+	m, repoMock := test.CreateMock()
+
 	service := NewService(repoMock)
 
 	t.Run("error", func(t *testing.T) {
@@ -23,8 +19,7 @@ func TestPing(t *testing.T) {
 		assert.Error(t, err)
 		assert.True(t, m.AssertCalled(t, "Ping"))
 
-		// reset mock data
-		m.ExpectedCalls = nil
+		test.ResetMock(m)
 		assert.Nil(t, m.ExpectedCalls)
 	})
 
@@ -35,8 +30,7 @@ func TestPing(t *testing.T) {
 		assert.NoError(t, err)
 		assert.True(t, m.AssertCalled(t, "Ping"))
 
-		// reset mock data
-		m.ExpectedCalls = nil
+		test.ResetMock(m)
 		assert.Nil(t, m.ExpectedCalls)
 	})
 }

@@ -2,10 +2,27 @@ package config
 
 import (
 	"os"
+	"path/filepath"
 	"strconv"
+
+	"github.com/joho/godotenv"
+	"github.com/rs/zerolog/log"
 )
 
-func NewConfig() *Config {
+func NewConfig(workDir string) *Config {
+	err := os.Chdir(workDir)
+	if err != nil {
+		log.Fatal().Err(err).Msg("Failed change to workspace directory")
+		panic(err)
+	}
+
+	envPath := filepath.Join(workDir, ".env")
+
+	if err := godotenv.Load(envPath); err != nil {
+		log.Fatal().Err(err).Msg("Failed to load .env file")
+		panic(err)
+	}
+
 	return &Config{
 		AppConfig: AppConfig{
 			AppHost: getEnv("APP_HOST", "localhost"),

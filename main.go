@@ -7,29 +7,31 @@ import (
 	"go-simple-template/handler"
 	"go-simple-template/repository"
 	"go-simple-template/router"
+	"go-simple-template/server"
 	"go-simple-template/service"
+	"os"
 
-	"github.com/joho/godotenv"
 	"github.com/rs/zerolog/log"
 )
 
 func main() {
-	if errEnv := godotenv.Load(); errEnv != nil {
-		log.Fatal().Err(errEnv).Msg("Failed to load .env file")
+	workDir, err := os.Getwd()
+	if err != nil {
+		panic(err)
 	}
-	cfg := config.NewConfig()
+	cfg := config.NewConfig(workDir)
 
-	dbConn, err := database.NewConnection(cfg)
+	db, err := database.NewConnection(cfg)
 	if err != nil {
 		log.Fatal().Err(err).Msg("Failed to connect to database")
 	}
 
-	repo := repository.NewRepository(dbConn)
+	repo := repository.NewRepository(db)
 	service := service.NewService(repo)
 	handler := handler.NewHandler(service)
 	router := router.NewRouter(handler)
 
-	server := NewServer(cfg, router)
+	server := server.NewServer(cfg, router)
 
 	log.Info().Msg(fmt.Sprintf("Server started at  http://%s:%d", cfg.AppHost, cfg.AppPort))
 	log.Fatal().Err(server.ListenAndServe()).Msg("Failed to start the server")
