@@ -48,7 +48,7 @@ func NewConnection(cfg *config.Config) (*gorm.DB, error) {
 			cfg.DBconfig.DBport,
 		)
 
-		dbConn, err := gorm.Open(postgres.Open("host=localhost user=postgres password=postgres dbname=postgres port=5432 sslmode=disable"), gormConfig)
+		dbConn, err := gorm.Open(postgres.Open(dsn), gormConfig)
 		if err != nil {
 			return nil, err
 		}
@@ -57,4 +57,11 @@ func NewConnection(cfg *config.Config) (*gorm.DB, error) {
 	}
 
 	return nil, errors.New("invalid database driver")
+}
+
+// auto migrate
+func AutoMigrate(db *gorm.DB) error {
+	return db.AutoMigrate(
+	//  add your model here, ex : &model.User{}
+	)
 }
