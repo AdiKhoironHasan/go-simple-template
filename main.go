@@ -27,19 +27,17 @@ func main() {
 	cfg := config.NewConfig()
 
 	redis := redis.NewRedis(cfg)
-	log.Info().Msg("Redis connected")
 
 	cache := cache.NewCache(redis)
-	log.Info().Msg("Cache connected")
 
 	db, err := database.NewConnection(cfg)
 	if err != nil {
 		log.Fatal().Err(err).Msg("Failed to connect to database")
 	}
 
-	repo := repository.NewRepository(db, cache)
-	service := service.NewService(repo)
-	handler := handler.NewHandler(service)
+	repo := repository.NewRepository().WithDB(db).WithCache(cache)
+	service := service.NewService().WithRepo(repo)
+	handler := handler.NewHandler().WithService(service)
 	router := router.NewRouter(handler)
 
 	server := server.NewServer(cfg, router)

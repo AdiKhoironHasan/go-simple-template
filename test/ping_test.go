@@ -26,8 +26,8 @@ func TestPing(t *testing.T) {
 
 	cfg := config.NewConfig()
 
-	service := service.NewService(repoMock)
-	handler := handler.NewHandler(service)
+	service := service.NewService().WithRepo(repoMock)
+	handler := handler.NewHandler().WithService(service)
 	router := router.NewRouter(handler)
 
 	t.Run("success", func(t *testing.T) {

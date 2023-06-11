@@ -8,8 +8,11 @@ type Handler struct {
 	service service.ServiceInterface
 }
 
-func NewHandler(service service.ServiceInterface) *Handler {
-	return &Handler{
-		service: service,
-	}
+func NewHandler() *Handler {
+	return &Handler{}
+}
+
+func (h *Handler) WithService(service service.ServiceInterface) *Handler {
+	h.service = service
+	return h
 }

@@ -10,7 +10,7 @@ import (
 func TestPing(t *testing.T) {
 	m, repoMock := test.CreateMock()
 
-	service := NewService(repoMock)
+	service := NewService().WithRepo(repoMock)
 
 	t.Run("error", func(t *testing.T) {
 		m.On("Ping").Return(assert.AnError)

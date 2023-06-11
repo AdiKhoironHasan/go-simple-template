@@ -16,13 +16,20 @@ var (
 	logRepo = logger.NewLogger().Logger.With().Str("pkg", "repository").Logger()
 )
 
-func NewRepository(db *gorm.DB, cache *cache.Cache) *repository {
-	return &repository{
-		db:    db,
-		cache: cache,
-	}
+func NewRepository() *repository {
+	return &repository{}
 }
 
 type RepositoryInterface interface {
 	Ping() error
+}
+
+func (r *repository) WithDB(db *gorm.DB) *repository {
+	r.db = db
+	return r
+}
+
+func (r *repository) WithCache(cache *cache.Cache) *repository {
+	r.cache = cache
+	return r
 }
