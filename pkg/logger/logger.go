@@ -9,14 +9,16 @@ import (
 
 type logger struct {
 	Logger zerolog.Logger
-	layers []string
 }
 
 func NewLogger() *logger {
 	zerolog.SetGlobalLevel(zerolog.DebugLevel)
 
 	// Initialize logger with console output
-	log.Logger = log.Output(zerolog.ConsoleWriter{Out: os.Stderr})
+	log.Logger = log.Output(zerolog.ConsoleWriter{
+		Out:        os.Stderr,
+		TimeFormat: "2006-01-02 15:04:05",
+	})
 
 	// Set custom caller hook to include line number
 	log.Logger = log.With().Caller().Logger()

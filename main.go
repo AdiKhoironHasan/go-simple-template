@@ -1,7 +1,6 @@
 package main
 
 import (
-	"fmt"
 	"go-simple-template/cache"
 	"go-simple-template/cache/redis"
 	"go-simple-template/config"
@@ -42,6 +41,6 @@ func main() {
 
 	server := server.NewServer(cfg, router)
 
-	log.Info().Msg(fmt.Sprintf("Server started at http://%s:%d", cfg.AppHost, cfg.AppPort))
+	log.Info().Msgf("Server started at http://%s:%d", cfg.AppHost, cfg.AppPort)
 	log.Fatal().Err(server.ListenAndServe()).Msg("Failed to start the server")
 }
