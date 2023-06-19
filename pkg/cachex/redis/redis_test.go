@@ -1,8 +1,8 @@
 package redis_test
 
 import (
-	"go-simple-template/cache/redis"
 	"go-simple-template/config"
+	"go-simple-template/pkg/cachex/redis"
 	"testing"
 
 	"github.com/joho/godotenv"

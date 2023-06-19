@@ -2,14 +2,16 @@ package service
 
 import (
 	"go-simple-template/pkg/logger"
+	"go-simple-template/pkg/storagex"
 	"go-simple-template/repository"
 
 	"github.com/hibiken/asynq"
 )
 
 type service struct {
-	repo  repository.RepositoryInterface
-	queue *asynq.Client
+	repo    repository.RepositoryInterface
+	queue   *asynq.Client
+	storage *storagex.Storage
 }
 
 var (
@@ -31,5 +33,10 @@ func (s *service) WithRepo(repo repository.RepositoryInterface) *service {
 
 func (s *service) WithQueue(queue *asynq.Client) *service {
 	s.queue = queue
+	return s
+}
+
+func (s *service) WithStorage(Storage *storagex.Storage) *service {
+	s.storage = Storage
 	return s
 }

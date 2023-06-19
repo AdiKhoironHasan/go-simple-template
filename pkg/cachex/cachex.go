@@ -1,4 +1,4 @@
-package cache
+package cachex
 
 type Cache struct {
 	Client CacheInterface

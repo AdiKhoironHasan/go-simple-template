@@ -1,12 +1,14 @@
 package main
 
 import (
-	"go-simple-template/cache"
-	"go-simple-template/cache/redis"
 	"go-simple-template/config"
 	"go-simple-template/database"
 	"go-simple-template/handler"
+	"go-simple-template/pkg/cachex"
+	"go-simple-template/pkg/cachex/redis"
 	"go-simple-template/pkg/logger"
+	"go-simple-template/pkg/storagex"
+	"go-simple-template/pkg/storagex/minio"
 	"go-simple-template/repository"
 	"go-simple-template/router"
 	"go-simple-template/server"
@@ -27,15 +29,21 @@ func main() {
 
 	redis := redis.NewRedis(cfg)
 
-	cache := cache.NewCache(redis)
+	cache := cachex.NewCache(redis)
 
 	db, err := database.NewConnection(cfg)
 	if err != nil {
 		log.Fatal().Err(err).Msg("Failed to connect to database")
 	}
 
+	minio, err := minio.NewMinio(cfg)
+	if err != nil {
+		log.Fatal().Err(err).Msg("Failed to connect to minio")
+	}
+	storage := storagex.NewStorage(minio)
+
 	repo := repository.NewRepository().WithDB(db).WithCache(cache)
-	service := service.NewService().WithRepo(repo)
+	service := service.NewService().WithRepo(repo).WithStorage(storage)
 	handler := handler.NewHandler().WithService(service)
 	router := router.NewRouter(handler)
 

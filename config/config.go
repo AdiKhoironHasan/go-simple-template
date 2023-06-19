@@ -28,6 +28,19 @@ func NewConfig() *Config {
 				RedisPassword: getEnv("REDIS_PASSWORD", ""),
 			},
 		},
+		StorageConfig: StorageConfig{
+			StorageDriver: getEnv("STORAGE_DRIVER", "minio"),
+			Minio: Minio{
+				MinioEndpoint:        getEnv("MINIO_ENDPOINT", ""),
+				MinioAccessKeyID:     getEnv("MINIO_ACCESS_KEY_ID", ""),
+				MinioAccessKeySecret: getEnv("MINIO_ACCESS_KEY_SECRET", ""),
+				MinioBucketName:      getEnv("MINIO_BUCKET_NAME", ""),
+			},
+			GCS: GCS{
+				CredentialsFile: getEnv("GCS_CREDENTIALS_FILE", ""),
+				GCSBucketName:   getEnv("GCS_BUCKET_NAME", ""),
+			},
+		},
 	}
 }
 
@@ -35,11 +48,14 @@ type Config struct {
 	AppConfig
 	DBconfig
 	CacheConfig
+	StorageConfig
 }
 
 type AppConfig struct {
-	AppHost string
-	AppPort int
+	AppName    string
+	AppVersion string
+	AppHost    string
+	AppPort    int
 }
 
 type DBconfig struct {
@@ -55,6 +71,25 @@ type CacheConfig struct {
 	CacheDriver string
 	Redis       Redis
 }
+
+type StorageConfig struct {
+	StorageDriver string
+	Minio         Minio
+	GCS           GCS
+}
+
+type Minio struct {
+	MinioEndpoint        string
+	MinioAccessKeyID     string
+	MinioAccessKeySecret string
+	MinioBucketName      string
+}
+
+type GCS struct {
+	CredentialsFile string
+	GCSBucketName   string
+}
+
 type Redis struct {
 	RedisHost     string
 	RedisPort     int

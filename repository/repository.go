@@ -1,7 +1,7 @@
 package repository
 
 import (
-	"go-simple-template/cache"
+	"go-simple-template/pkg/cachex"
 	"go-simple-template/pkg/logger"
 
 	"gorm.io/gorm"
@@ -9,7 +9,7 @@ import (
 
 type repository struct {
 	db    *gorm.DB
-	cache *cache.Cache
+	cache *cachex.Cache
 }
 
 var (
@@ -29,7 +29,7 @@ func (r *repository) WithDB(db *gorm.DB) *repository {
 	return r
 }
 
-func (r *repository) WithCache(cache *cache.Cache) *repository {
+func (r *repository) WithCache(cache *cachex.Cache) *repository {
 	r.cache = cache
 	return r
 }
