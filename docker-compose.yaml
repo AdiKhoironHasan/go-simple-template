@@ -1,0 +1,38 @@
+version: '3'
+services:
+  minio:
+    container_name: minio
+    hostname: minio
+    image: minio/minio:RELEASE.2023-09-23T03-47-50Z
+    ports:
+      - "10111:10111"
+      - "9001:9001"
+    volumes:
+      - ./var/object-store:/data
+    environment:
+      - MINIO_ROOT_USER=admin
+      - MINIO_ROOT_PASSWORD=password123
+    command: server /data --console-address ":9001"
+    networks:
+      - go-simple-network
+
+  redis:
+    image: redis:7
+    container_name: redis
+    hostname: redis
+    ports:
+      - 6379:6379
+    logging:
+      driver: 'json-file'
+      options:
+        max-size: '2m'
+        max-file: '5'
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 10s
+    networks:
+      - go-simple-network
+
+networks:
+  go-simple-network:
+    driver: bridge
