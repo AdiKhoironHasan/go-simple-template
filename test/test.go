@@ -1,7 +1,7 @@
 package test
 
 import (
-	"go-simple-template/repository"
+	"go-simple-template/internal/repository"
 
 	"github.com/stretchr/testify/mock"
 )

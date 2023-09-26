@@ -1,8 +1,8 @@
 package router
 
 import (
-	"go-simple-template/dto"
-	"go-simple-template/handler"
+	"go-simple-template/internal/dto"
+	"go-simple-template/internal/handler"
 	"net/http"
 
 	"github.com/labstack/echo/v4"

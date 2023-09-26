@@ -1,7 +1,7 @@
 package handler
 
 import (
-	"go-simple-template/dto"
+	"go-simple-template/internal/dto"
 	"net/http"
 
 	"github.com/labstack/echo/v4"

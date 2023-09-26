@@ -1,7 +1,7 @@
 package handler
 
 import (
-	"go-simple-template/service"
+	"go-simple-template/internal/service"
 )
 
 type Handler struct {

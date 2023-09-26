@@ -2,17 +2,17 @@ package main
 
 import (
 	"go-simple-template/config"
-	"go-simple-template/database"
-	"go-simple-template/handler"
+	"go-simple-template/internal/database"
+	"go-simple-template/internal/handler"
+	"go-simple-template/internal/repository"
+	"go-simple-template/internal/router"
+	"go-simple-template/internal/server"
+	"go-simple-template/internal/service"
 	"go-simple-template/pkg/cachex"
 	"go-simple-template/pkg/cachex/redis"
 	"go-simple-template/pkg/logger"
 	"go-simple-template/pkg/storagex"
 	"go-simple-template/pkg/storagex/minio"
-	"go-simple-template/repository"
-	"go-simple-template/router"
-	"go-simple-template/server"
-	"go-simple-template/service"
 
 	"github.com/joho/godotenv"
 )

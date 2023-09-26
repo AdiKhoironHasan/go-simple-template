@@ -5,8 +5,8 @@ import (
 	"context"
 	"fmt"
 	"go-simple-template/config"
+	"go-simple-template/internal/pkg/utils"
 	"go-simple-template/pkg/storagex"
-	"go-simple-template/pkg/utils"
 
 	"github.com/minio/minio-go"
 )

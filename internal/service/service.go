@@ -1,9 +1,9 @@
 package service
 
 import (
+	"go-simple-template/internal/repository"
 	"go-simple-template/pkg/logger"
 	"go-simple-template/pkg/storagex"
-	"go-simple-template/repository"
 
 	"github.com/hibiken/asynq"
 )
