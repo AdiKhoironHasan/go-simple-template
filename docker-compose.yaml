@@ -1,5 +1,21 @@
 version: '3'
 services:
+  app:
+    container_name: go-simple
+    hostname: go-simple
+    build:
+      context: .
+      dockerfile: ./Dockerfile
+    ports:
+      - "8081:8080"
+    env_file:
+      - .env
+    # depends_on:
+    #   - minio
+    #   - redis
+    networks:
+      - go-simple-network
+
   minio:
     container_name: minio
     hostname: minio
@@ -30,6 +46,22 @@ services:
     healthcheck:
       test: ["CMD", "redis-cli", "ping"]
       interval: 10s
+    networks:
+      - go-simple-network
+
+  mysql:
+    image: mysql:8
+    container_name: mysql
+    hostname: mysql
+    ports:
+      - 3306:3306
+    volumes:
+      - ./var/mysql:/var/lib/mysql
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_DATABASE: go_simple
+      MYSQL_USER: go_simple
+      MYSQL_PASSWORD: go_simple
     networks:
       - go-simple-network
 

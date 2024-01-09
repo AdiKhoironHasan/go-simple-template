@@ -4,6 +4,7 @@ import (
 	"errors"
 	"fmt"
 	"go-simple-template/config"
+	"go-simple-template/pkg/logger"
 
 	"gorm.io/driver/mysql"
 	"gorm.io/driver/postgres"
@@ -18,13 +19,14 @@ const (
 func NewConnection(cfg *config.Config) (*gorm.DB, error) {
 	var (
 		dsn string
+		log = logger.NewLogger().Logger.With().Str("pkg", "main").Logger()
 	)
 
 	gormConfig := &gorm.Config{}
 
 	switch cfg.DBconfig.DBdriver {
 	case driverMySQL:
-		dsn = fmt.Sprintf(`%s@%stcp(%s:%s)/%s`,
+		dsn = fmt.Sprintf(`%s:%s@tcp(%s:%s)/%s`,
 			cfg.DBconfig.DBuser,
 			cfg.DBconfig.DBpassword,
 			cfg.DBconfig.DBhost,
@@ -34,6 +36,8 @@ func NewConnection(cfg *config.Config) (*gorm.DB, error) {
 
 		dbConn, err := gorm.Open(mysql.Open(dsn), gormConfig)
 		if err != nil {
+			log.Error().Err(err).Str("dsn", dsn).Msg("failed to connect to database")
+
 			return nil, err
 		}
 
@@ -50,6 +54,8 @@ func NewConnection(cfg *config.Config) (*gorm.DB, error) {
 
 		dbConn, err := gorm.Open(postgres.Open(dsn), gormConfig)
 		if err != nil {
+			log.Error().Err(err).Str("dsn", dsn).Msg("failed to connect to database")
+
 			return nil, err
 		}
 
