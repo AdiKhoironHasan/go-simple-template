@@ -21,8 +21,7 @@ func main() {
 	log := logger.NewLogger().Logger.With().Str("pkg", "main").Logger()
 
 	if err := godotenv.Load(); err != nil {
-		log.Fatal().Err(err).Msg("Failed to load env file")
-		panic(err)
+		log.Warn().Msg("Failed to load env file, get env from os")
 	}
 
 	cfg := config.NewConfig()
