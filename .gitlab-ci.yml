@@ -1,0 +1,31 @@
+stages:
+  - build
+  - deploy
+
+# Development
+build-development:
+  only:
+    - development
+  stage: build
+  environment:
+    name: development
+    url: https://api.manageree.com
+  script:
+    - echo "Starting build"
+    - docker build --rm --tag go-simple-app:$CI_COMMIT_SHA -f Dockerfile .
+    # - docker tag go-simple-app:$CI_COMMIT_SHA registry.gitlab.com/manageree/go-simple-app:$CI_COMMIT_SHA
+    # - docker push registry.gitlab.com/manageree/go-simple-app:$CI_COMMIT_SHA
+    - echo "Build completed"
+
+deploy-development:
+  only:
+    - development
+  stage: deploy
+  environment:
+    name: development
+    url: https://api.manageree.com
+  script:
+    - echo "Starting deployment"
+    - docker run -d -p 8082:8080 go-simple-app:$CI_COMMIT_SHA
+    - echo "Deployment completed"
+
