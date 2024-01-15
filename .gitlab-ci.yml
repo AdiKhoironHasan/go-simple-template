@@ -6,6 +6,8 @@ stages:
 build-development:
   only:
     - development
+  tags:
+    - all-env
   stage: build
   environment:
     name: development
@@ -20,6 +22,8 @@ build-development:
 deploy-development:
   only:
     - development
+  tags:
+    - all-env
   stage: deploy
   environment:
     name: development
