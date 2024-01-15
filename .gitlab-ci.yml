@@ -1,8 +1,20 @@
 stages:
   - build
   - deploy
+  - test
 
 # Development
+format:
+  stage: test
+  only:
+    - development
+  tags:
+    - all-env # tags is for selecting runner with related tag
+  script:
+    - go fmt $(go list ./... | grep -v /vendor/)
+    - go vet $(go list ./... | grep -v /vendor/)
+    - go test -race $(go list ./... | grep -v /vendor/)
+
 build-development:
   only:
     - development
