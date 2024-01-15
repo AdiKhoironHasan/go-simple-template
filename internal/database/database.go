@@ -1,7 +1,6 @@
 package database
 
 import (
-	"errors"
 	"fmt"
 	"go-simple-template/config"
 	"go-simple-template/pkg/logger"
@@ -64,7 +63,7 @@ func NewConnection(cfg *config.Config) (*gorm.DB, error) {
 		return dbConn, nil
 	}
 
-	return nil, errors.New("invalid database driver")
+	return nil, fmt.Errorf("invalid database driver: %s", cfg.DBconfig.DBdriver)
 }
 
 // auto migrate
