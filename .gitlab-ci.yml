@@ -12,6 +12,12 @@ stages:
     # - go test -race $(go list ./... | grep -v /vendor/)
     # - echo "Test completed"
 
+before_script:
+  - echo "Starting before script"
+  # - docker login -u $CI_REGISTRY_USER -p $CI_REGISTRY_PASSWORD $CI_REGISTRY
+  - cat ${ENV_DEV} >> .env
+  - echo "Before script completed"
+
 # Development
 build-development:
   only:
@@ -38,6 +44,11 @@ deploy-development:
     name: development
   script:
     - echo "Starting deployment"
-    - docker run -d -p 8082:8080 go-simple-app:$CI_COMMIT_SHORT_SHA
+    - docker stop dev-go-simple-app || true && docker rm dev-go-simple-app || true
+    - docker run -d
+      --name dev-go-simple-app
+      -p 8082:8080
+      --env-file .env
+      go-simple-app:${CI_COMMIT_SHORT_SHA}
     - echo "Deployment completed"
 
