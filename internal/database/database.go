@@ -6,6 +6,8 @@ import (
 	"go-simple-template/config"
 	"go-simple-template/pkg/logger"
 
+	_ "github.com/go-sql-driver/mysql"
+	_ "github.com/lib/pq"
 	"gorm.io/driver/mysql"
 	"gorm.io/driver/postgres"
 	"gorm.io/gorm"
