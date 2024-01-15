@@ -98,12 +98,12 @@ type Redis struct {
 }
 
 func getEnv(key string, defaultVal string) string {
-	if value, exist := os.LookupEnv(key); exist {
-		return value
-	}
-
 	if nextValue := os.Getenv(key); nextValue != "" {
 		return nextValue
+	}
+
+	if value, exist := os.LookupEnv(key); exist {
+		return value
 	}
 
 	return defaultVal
