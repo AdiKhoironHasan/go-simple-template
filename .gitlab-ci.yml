@@ -12,7 +12,7 @@ build-development:
     url: https://api.manageree.com
   script:
     - echo "Starting build"
-    - docker build --rm --tag go-simple-app:latest -f Dockerfile .
+    - docker build --tag go-simple-app:latest -f Dockerfile .
     # - docker tag go-simple-app:$CI_COMMIT_SHA registry.gitlab.com/manageree/go-simple-app:$CI_COMMIT_SHA
     # - docker push registry.gitlab.com/manageree/go-simple-app:$CI_COMMIT_SHA
     - echo "Build completed"
