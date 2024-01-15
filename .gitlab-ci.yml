@@ -3,11 +3,8 @@ stages:
   - deploy
   - test
 
-# Development
-format:
+test:
   stage: test
-  only:
-    - development
   tags:
     - all-env # tags is for selecting runner with related tag
   script:
@@ -15,6 +12,7 @@ format:
     - go vet $(go list ./... | grep -v /vendor/)
     - go test -race $(go list ./... | grep -v /vendor/)
 
+# Development
 build-development:
   only:
     - development
@@ -23,7 +21,6 @@ build-development:
   stage: build
   environment:
     name: development
-    url: https://api.manageree.com
   script:
     - echo "Starting build"
     - docker build --tag go-simple-app:latest -f Dockerfile .
@@ -39,7 +36,6 @@ deploy-development:
   stage: deploy
   environment:
     name: development
-    url: https://api.manageree.com
   script:
     - echo "Starting deployment"
     - docker run -d -p 8082:8080 go-simple-app:latest
