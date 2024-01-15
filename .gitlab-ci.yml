@@ -29,7 +29,7 @@ build-development:
     name: development
   script:
     - echo "Starting build"
-    - docker build --tag go-simple-app:$CI_COMMIT_SHORT_SHA -f Dockerfile .
+    - docker build --tag go-simple-app:$CI_COMMIT_SHORT_SHA .
     # - docker tag go-simple-app:$$CI_COMMIT_SHORT_SHA registry.gitlab.com/manageree/go-simple-app:$$CI_COMMIT_SHORT_SHA
     # - docker push registry.gitlab.com/manageree/go-simple-app:$$CI_COMMIT_SHORT_SHA
     - echo "Build completed"
