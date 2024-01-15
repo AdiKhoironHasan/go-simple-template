@@ -5,27 +5,27 @@ stages:
 
 test:
   stage: test
-  tags:
-    - all-env # tags is for selecting runner with related tag
   script:
+    - echo "Starting test"
     - go fmt $(go list ./... | grep -v /vendor/)
     - go vet $(go list ./... | grep -v /vendor/)
     - go test -race $(go list ./... | grep -v /vendor/)
+    - echo "Test completed"
 
 # Development
 build-development:
   only:
     - development
   tags:
-    - all-env
+    - all-env # tags is for selecting runner with related tag
   stage: build
   environment:
     name: development
   script:
     - echo "Starting build"
-    - docker build --tag go-simple-app:latest -f Dockerfile .
-    # - docker tag go-simple-app:$CI_COMMIT_SHA registry.gitlab.com/manageree/go-simple-app:$CI_COMMIT_SHA
-    # - docker push registry.gitlab.com/manageree/go-simple-app:$CI_COMMIT_SHA
+    - docker build --tag go-simple-app:$CI_COMMIT_SHORT_SHA -f Dockerfile .
+    # - docker tag go-simple-app:$$CI_COMMIT_SHORT_SHA registry.gitlab.com/manageree/go-simple-app:$$CI_COMMIT_SHORT_SHA
+    # - docker push registry.gitlab.com/manageree/go-simple-app:$$CI_COMMIT_SHORT_SHA
     - echo "Build completed"
 
 deploy-development:
@@ -38,6 +38,6 @@ deploy-development:
     name: development
   script:
     - echo "Starting deployment"
-    - docker run -d -p 8082:8080 go-simple-app:latest
+    - docker run -d -p 8082:8080 go-simple-app:$CI_COMMIT_SHORT_SHA
     - echo "Deployment completed"
 
