@@ -10,7 +10,7 @@ WORKDIR /app
 
 COPY go.mod .
 COPY go.sum .
-COPY .env .
+# COPY .env .
 
 RUN go mod download
 
@@ -35,6 +35,6 @@ ENV TZ=Asia/Jakarta
 WORKDIR /app
 
 COPY --from=builder ./app/main .
-COPY --from=builder ./app/.env .
+# COPY --from=builder ./app/.env .
 
 CMD ["./main"]
