@@ -8,7 +8,7 @@ import (
 )
 
 func (h *Handler) Ping(c echo.Context) error {
-	err := h.service.Ping()
+	err := h.service.Ping(c)
 	if err != nil {
 		return c.JSON(http.StatusInternalServerError, dto.ApiResponse{
 			Code:    http.StatusInternalServerError,

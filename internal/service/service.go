@@ -6,6 +6,7 @@ import (
 	"go-simple-template/pkg/storagex"
 
 	"github.com/hibiken/asynq"
+	"github.com/labstack/echo/v4"
 )
 
 type service struct {
@@ -23,7 +24,7 @@ func NewService() *service {
 }
 
 type ServiceInterface interface {
-	Ping() error
+	Ping(ctx echo.Context) error
 }
 
 func (s *service) WithRepo(repo repository.RepositoryInterface) *service {

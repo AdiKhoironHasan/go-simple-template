@@ -4,6 +4,7 @@ import (
 	"go-simple-template/pkg/cachex"
 	"go-simple-template/pkg/logger"
 
+	"github.com/labstack/echo/v4"
 	"gorm.io/gorm"
 )
 
@@ -21,7 +22,7 @@ func NewRepository() *repository {
 }
 
 type RepositoryInterface interface {
-	Ping() error
+	Ping(ctx echo.Context) error
 }
 
 func (r *repository) WithDB(db *gorm.DB) *repository {

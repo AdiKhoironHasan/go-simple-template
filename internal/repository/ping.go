@@ -1,6 +1,8 @@
 package repository
 
-func (r *repository) Ping() error {
+import "github.com/labstack/echo/v4"
+
+func (r *repository) Ping(ctx echo.Context) error {
 	_, err := r.cache.Client.Ping()
 	if err != nil {
 		logRepo.Error().Err(err).Msg("cache ping failed")
