@@ -1,6 +1,7 @@
 package service
 
 import (
+	"context"
 	"go-simple-template/internal/repository"
 	"go-simple-template/pkg/logger"
 	"go-simple-template/pkg/storagex"
@@ -23,7 +24,7 @@ func NewService() *service {
 }
 
 type ServiceInterface interface {
-	Ping() error
+	Ping(ctx context.Context) error
 }
 
 func (s *service) WithRepo(repo repository.RepositoryInterface) *service {

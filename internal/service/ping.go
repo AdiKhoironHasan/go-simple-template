@@ -1,9 +1,19 @@
 package service
 
-func (s *service) Ping() error {
-	err := s.repo.Ping()
+import (
+	"context"
+	"go-simple-template/pkg/tracer"
+)
+
+func (s *service) Ping(ctx context.Context) error {
+	ctx, span := tracer.SpanStart(ctx, "Service.Ping")
+	defer span.Finish()
+
+	err := s.repo.Ping(ctx)
 	if err != nil {
+		span.AddError(err)
 		logService.Error().Err(err).Msg("service ping failed")
+
 		return err
 	}
 
