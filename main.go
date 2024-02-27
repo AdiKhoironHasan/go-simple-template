@@ -53,7 +53,7 @@ func main() {
 	repo := repository.NewRepository().WithDB(db).WithCache(cache)
 	service := service.NewService().WithRepo(repo).WithStorage(storage)
 	handler := handler.NewHandler().WithService(service)
-	router := router.NewRouter(handler)
+	router := router.NewRouter(handler, cfg)
 
 	server := server.NewServer(cfg, router)
 

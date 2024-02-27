@@ -2,6 +2,7 @@ package tracer
 
 import (
 	"context"
+	"fmt"
 
 	"go.opentelemetry.io/otel"
 	"go.opentelemetry.io/otel/attribute"
@@ -45,4 +46,50 @@ func (s *Span) AddEvents(name string, attrs ...attribute.KeyValue) {
 // warning, caution etc. Avoid logging sensitive data!
 func (s *Span) AddError(err error, attrs ...attribute.KeyValue) {
 	s.span.RecordError(err, trace.WithAttributes(attrs...))
+}
+
+func (s *Span) TraceId() string {
+	return s.span.SpanContext().TraceID().String()
+}
+
+func (s *Span) AddAnyTags(keyValues map[string]any) {
+	fields := make([]attribute.KeyValue, len(keyValues))
+
+	for key, val := range keyValues {
+		switch typedVal := val.(type) {
+		case bool:
+			fields = append(fields, attribute.Bool(key, typedVal))
+		case string:
+			fields = append(fields, attribute.String(key, typedVal))
+		case int:
+			fields = append(fields, attribute.Int(key, typedVal))
+		case int8:
+			fields = append(fields, attribute.Int(key, int(typedVal)))
+		case int16:
+			fields = append(fields, attribute.Int(key, int(typedVal)))
+		case int32:
+			fields = append(fields, attribute.Int(key, int(typedVal)))
+		case int64:
+			fields = append(fields, attribute.Int64(key, typedVal))
+		case uint:
+			fields = append(fields, attribute.Int(key, int(typedVal)))
+		case uint64:
+			fields = append(fields, attribute.Int(key, int(typedVal)))
+		case uint8:
+			fields = append(fields, attribute.Int(key, int(typedVal)))
+		case uint16:
+			fields = append(fields, attribute.Int(key, int(typedVal)))
+		case uint32:
+			fields = append(fields, attribute.Int(key, int(typedVal)))
+		case float32:
+			fields = append(fields, attribute.Float64(key, float64(typedVal)))
+		case float64:
+			fields = append(fields, attribute.Float64(key, typedVal))
+		default:
+			// When in doubt, coerce to a string
+			fields = append(fields, attribute.String(key, fmt.Sprintf("%v", typedVal)))
+		}
+	}
+
+	s.span.SetAttributes(fields...)
 }

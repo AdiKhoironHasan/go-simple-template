@@ -12,7 +12,7 @@ func (s *service) Ping(ctx context.Context) error {
 	err := s.repo.Ping(ctx)
 	if err != nil {
 		span.AddError(err)
-		logService.Error().Err(err).Msg("service ping failed")
+		logService.Error().Err(err).Str("traceId", span.TraceId()).Msg("service ping failed")
 
 		return err
 	}
