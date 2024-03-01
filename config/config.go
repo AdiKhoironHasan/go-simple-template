@@ -8,8 +8,11 @@ import (
 func NewConfig() *Config {
 	return &Config{
 		AppConfig: AppConfig{
-			AppHost: getEnv("APP_HOST", "localhost"),
-			AppPort: getEnvAsInt("APP_PORT", 8000),
+			AppName:    getEnv("APP_NAME", "go-simple-template"),
+			AppEnv:     getEnv("APP_ENV", "development"),
+			AppVersion: getEnv("APP_VERSION", "v0.0.1"),
+			AppHost:    getEnv("APP_HOST", "localhost"),
+			AppPort:    getEnvAsInt("APP_PORT", 8000),
 		},
 		DBconfig: DBconfig{
 			DBdriver:   getEnv("DB_DRIVER", ""),
@@ -41,6 +44,9 @@ func NewConfig() *Config {
 				GCSBucketName:   getEnv("GCS_BUCKET_NAME", ""),
 			},
 		},
+		Tracer: Tracer{
+			JaegerURL: getEnv("JAEGER_URL", "http://localhost:14268/api/traces"),
+		},
 	}
 }
 
@@ -49,10 +55,12 @@ type Config struct {
 	DBconfig
 	CacheConfig
 	StorageConfig
+	Tracer
 }
 
 type AppConfig struct {
 	AppName    string
+	AppEnv     string
 	AppVersion string
 	AppHost    string
 	AppPort    int
@@ -95,6 +103,10 @@ type Redis struct {
 	RedisPort     int
 	RedisDB       int
 	RedisPassword string
+}
+
+type Tracer struct {
+	JaegerURL string
 }
 
 func getEnv(key string, defaultVal string) string {

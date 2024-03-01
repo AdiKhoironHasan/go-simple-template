@@ -1,6 +1,7 @@
 package repository
 
 import (
+	"context"
 	"go-simple-template/pkg/cachex"
 	"go-simple-template/pkg/logger"
 
@@ -21,7 +22,7 @@ func NewRepository() *repository {
 }
 
 type RepositoryInterface interface {
-	Ping() error
+	Ping(ctx context.Context) error
 }
 
 func (r *repository) WithDB(db *gorm.DB) *repository {

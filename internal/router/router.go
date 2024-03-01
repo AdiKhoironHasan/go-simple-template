@@ -1,17 +1,23 @@
 package router
 
 import (
+	"go-simple-template/config"
 	"go-simple-template/internal/dto"
 	"go-simple-template/internal/handler"
 	"net/http"
+
+	tracemiddleware "go-simple-template/pkg/tracer/middleware"
 
 	"github.com/labstack/echo/v4"
 	"github.com/labstack/echo/v4/middleware"
 )
 
-func NewRouter(h *handler.Handler) *echo.Echo {
+func NewRouter(h *handler.Handler, cfg *config.Config) *echo.Echo {
 	e := echo.New()
-	e.Use(middleware.Logger())
+	e.Use(
+		middleware.Logger(),
+		tracemiddleware.EchoMiddleware(cfg.AppName),
+	)
 
 	InitRouter(e, h)
 

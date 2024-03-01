@@ -1,6 +1,7 @@
 package redis
 
 import (
+	"context"
 	"fmt"
 	"go-simple-template/config"
 
@@ -24,6 +25,6 @@ type RedisInterface interface {
 	Ping() (string, error)
 }
 
-func (r *Redis) Ping() (string, error) {
-	return r.client.Ping().Result()
+func (r *Redis) Ping(ctx context.Context) (string, error) {
+	return r.client.WithContext(ctx).Ping().Result()
 }

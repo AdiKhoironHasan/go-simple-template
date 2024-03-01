@@ -13,6 +13,7 @@ import (
 	"go-simple-template/pkg/logger"
 	"go-simple-template/pkg/storagex"
 	"go-simple-template/pkg/storagex/minio"
+	"go-simple-template/pkg/tracer"
 
 	"github.com/joho/godotenv"
 )
@@ -26,6 +27,13 @@ func main() {
 	}
 
 	cfg := config.NewConfig()
+
+	tp, err := tracer.JaegerTraceProvider(cfg)
+	if err != nil {
+		log.Fatal().Err(err).Msg("Failed to create trace provider")
+	}
+
+	tracer.RegisterTracer(tp)
 
 	redis := redis.NewRedis(cfg)
 
@@ -45,7 +53,7 @@ func main() {
 	repo := repository.NewRepository().WithDB(db).WithCache(cache)
 	service := service.NewService().WithRepo(repo).WithStorage(storage)
 	handler := handler.NewHandler().WithService(service)
-	router := router.NewRouter(handler)
+	router := router.NewRouter(handler, cfg)
 
 	server := server.NewServer(cfg, router)
 
