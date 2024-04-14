@@ -1,43 +1,43 @@
 package service
 
-import (
-	"context"
-	"go-simple-template/internal/repository"
-	"go-simple-template/pkg/logger"
-	"go-simple-template/pkg/storagex"
+// import (
+// 	"context"
+// 	"go-simple-template/internal/repository"
+// 	"go-simple-template/pkg/logger"
+// 	"go-simple-template/pkg/storagex"
 
-	"github.com/hibiken/asynq"
-)
+// 	"github.com/hibiken/asynq"
+// )
 
-type service struct {
-	repo    repository.RepositoryInterface
-	queue   *asynq.Client
-	storage *storagex.Storage
-}
+// type pingService struct {
+// 	repo    repository.PingRepository
+// 	queue   *asynq.Client
+// 	storage *storagex.Storage
+// }
 
-var (
-	logService = logger.NewLogger().Logger.With().Str("pkg", "service").Logger()
-)
+// var (
+// 	logService = logger.NewLogger().Logger.With().Str("pkg", "service").Logger()
+// )
 
-func NewService() *service {
-	return &service{}
-}
+// func NewPing() *pingService {
+// 	return &pingService{}
+// }
 
-type ServiceInterface interface {
-	Ping(ctx context.Context) error
-}
+// type PingService interface {
+// 	Ping(ctx context.Context) error
+// }
 
-func (s *service) WithRepo(repo repository.RepositoryInterface) *service {
-	s.repo = repo
-	return s
-}
+// func (s *pingService) WithRepo(repo repository.PingRepository) *pingService {
+// 	s.repo = repo
+// 	return s
+// }
 
-func (s *service) WithQueue(queue *asynq.Client) *service {
-	s.queue = queue
-	return s
-}
+// func (s *pingService) WithQueue(queue *asynq.Client) *pingService {
+// 	s.queue = queue
+// 	return s
+// }
 
-func (s *service) WithStorage(Storage *storagex.Storage) *service {
-	s.storage = Storage
-	return s
-}
+// func (s *pingService) WithStorage(Storage *storagex.Storage) *pingService {
+// 	s.storage = Storage
+// 	return s
+// }

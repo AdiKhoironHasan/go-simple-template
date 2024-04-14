@@ -9,8 +9,8 @@ import (
 	semconv "go.opentelemetry.io/otel/semconv/v1.4.0"
 )
 
-func JaegerTraceProvider(cfg *config.Config) (*sdktrace.TracerProvider, error) {
-	exp, err := jaeger.New(jaeger.WithCollectorEndpoint(jaeger.WithEndpoint(cfg.JaegerURL)))
+func JaegerTraceProvider() (*sdktrace.TracerProvider, error) {
+	exp, err := jaeger.New(jaeger.WithCollectorEndpoint(jaeger.WithEndpoint(config.JaegerEndpoint())))
 	if err != nil {
 		return nil, err
 	}
@@ -19,8 +19,8 @@ func JaegerTraceProvider(cfg *config.Config) (*sdktrace.TracerProvider, error) {
 		sdktrace.WithBatcher(exp),
 		sdktrace.WithResource(resource.NewWithAttributes(
 			semconv.SchemaURL,
-			semconv.ServiceNameKey.String(cfg.AppName),
-			semconv.DeploymentEnvironmentKey.String(cfg.AppEnv),
+			semconv.ServiceNameKey.String(config.AppName()),
+			semconv.DeploymentEnvironmentKey.String(config.AppEnv()),
 		)),
 	)
 	return tp, nil

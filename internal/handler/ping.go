@@ -8,7 +8,7 @@ import (
 	"github.com/labstack/echo/v4"
 )
 
-func (h *Handler) Ping(c echo.Context) error {
+func (h *PingHandler) Ping(c echo.Context) error {
 	ctx, span := tracer.SpanStart(c.Request().Context(), "Handler.Ping")
 	defer span.Finish()
 

@@ -16,22 +16,22 @@ type Minio struct {
 	bucket string
 }
 
-func NewMinio(cfg *config.Config) (*Minio, error) {
+func NewMinio() (*Minio, error) {
 	client, err := minio.New(
-		cfg.Minio.MinioEndpoint,
-		cfg.Minio.MinioAccessKeyID,
-		cfg.Minio.MinioAccessKeySecret,
+		config.MinioEndpoint(),
+		config.MinioAccessKeyID(),
+		config.MinioAccessKeySecret(),
 		false,
 	)
 	if err != nil {
 		return nil, err
 	}
 
-	client.SetAppInfo(cfg.AppName, cfg.AppVersion)
+	client.SetAppInfo(config.AppName(), config.AppVersion())
 
 	m := &Minio{
 		client: client,
-		bucket: cfg.Minio.MinioBucketName,
+		bucket: config.MinioBucketName(),
 	}
 
 	return m, nil

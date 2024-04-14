@@ -1,9 +1,11 @@
 package router
 
 import (
-	"go-simple-template/config"
+	"go-simple-template/factory"
 	"go-simple-template/internal/dto"
 	"go-simple-template/internal/handler"
+	"go-simple-template/internal/repository"
+	"go-simple-template/internal/service"
 	"net/http"
 
 	tracemiddleware "go-simple-template/pkg/tracer/middleware"
@@ -12,19 +14,42 @@ import (
 	"github.com/labstack/echo/v4/middleware"
 )
 
-func NewRouter(h *handler.Handler, cfg *config.Config) *echo.Echo {
-	e := echo.New()
-	e.Use(
-		middleware.Logger(),
-		tracemiddleware.EchoMiddleware(cfg.AppName),
-	)
+func New(opts ...Option) *Router {
+	r := &Router{
+		// Router: echo.New().Router(),
+	}
 
-	InitRouter(e, h)
+	for _, opt := range opts {
+		opt(r)
+	}
 
-	return e
+	return r
 }
 
-func InitRouter(e *echo.Echo, h *handler.Handler) {
+// Router registers routes to be matched and dispatches a handler.
+type Router struct {
+	// *echo.Router
+	*factory.Factory
+}
+
+func (r *Router) Init() *echo.Echo {
+	e := echo.New()
+
+	e.Use(
+		middleware.Logger(),
+		tracemiddleware.EchoMiddleware("svcname"),
+	)
+
+	// repository
+	pingRepo := repository.NewPing().WithDB(r.Db).WithCache(r.Cache)
+
+	// service
+	pingService := service.NewPing(pingRepo, r.Storage)
+
+	// handler
+	pingHandler := handler.NewPing(pingService)
+
+	// init routes
 	e.GET("/", func(c echo.Context) error {
 		return c.JSON(http.StatusOK, dto.ApiResponse{
 			Code:    http.StatusOK,
@@ -32,5 +57,8 @@ func InitRouter(e *echo.Echo, h *handler.Handler) {
 		})
 	})
 
-	e.GET("/ping", h.Ping)
+	// ping
+	e.GET("/ping", pingHandler.Ping)
+
+	return e
 }

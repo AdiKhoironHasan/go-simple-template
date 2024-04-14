@@ -18,8 +18,8 @@ type GCS struct {
 	bucket string
 }
 
-func NewCGS(cfg *config.Config) (*GCS, error) {
-	credentialPath := fmt.Sprintf("config/gcs/%s", cfg.GCS.CredentialsFile)
+func NewCGS() (*GCS, error) {
+	credentialPath := fmt.Sprintf("config/gcs/%s", config.GCSCredentialsFile())
 
 	client, err := storage.NewClient(context.Background(), option.WithCredentialsFile(credentialPath))
 	if err != nil {
@@ -28,7 +28,7 @@ func NewCGS(cfg *config.Config) (*GCS, error) {
 
 	return &GCS{
 		client: client,
-		bucket: cfg.GCS.GCSBucketName,
+		bucket: config.GCSBucketName(),
 	}, nil
 }
 

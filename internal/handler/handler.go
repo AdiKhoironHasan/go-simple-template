@@ -4,15 +4,12 @@ import (
 	"go-simple-template/internal/service"
 )
 
-type Handler struct {
-	service service.ServiceInterface
+type PingHandler struct {
+	service service.PingService
 }
 
-func NewHandler() *Handler {
-	return &Handler{}
-}
-
-func (h *Handler) WithService(service service.ServiceInterface) *Handler {
-	h.service = service
-	return h
+func NewPing(service service.PingService) *PingHandler {
+	return &PingHandler{
+		service: service,
+	}
 }

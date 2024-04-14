@@ -17,11 +17,11 @@ var (
 	logRepo = logger.NewLogger().Logger.With().Str("pkg", "repository").Logger()
 )
 
-func NewRepository() *repository {
+func NewPing() *repository {
 	return &repository{}
 }
 
-type RepositoryInterface interface {
+type PingRepository interface {
 	Ping(ctx context.Context) error
 }
 

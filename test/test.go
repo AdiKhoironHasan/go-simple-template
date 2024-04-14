@@ -1,21 +1,21 @@
 package test
 
-import (
-	"go-simple-template/internal/repository"
+// import (
+// 	"go-simple-template/internal/repository"
 
-	"github.com/stretchr/testify/mock"
-)
+// 	"github.com/stretchr/testify/mock"
+// )
 
-func CreateMock() (*mock.Mock, repository.RepositoryInterface) {
-	m := mock.Mock{}
-	repoMock := repository.NewRepositoryMock(&m)
-	return &m, repoMock
-}
+// func CreateMock() (*mock.Mock, repository.RepositoryInterface) {
+// 	m := mock.Mock{}
+// 	repoMock := repository.NewRepositoryMock(&m)
+// 	return &m, repoMock
+// }
 
-func ResetMock(m *mock.Mock) {
-	if m == nil {
-		panic("mock is nil")
-	}
+// func ResetMock(m *mock.Mock) {
+// 	if m == nil {
+// 		panic("mock is nil")
+// 	}
 
-	m.ExpectedCalls = nil
-}
+// 	m.ExpectedCalls = nil
+// }

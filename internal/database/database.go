@@ -16,7 +16,7 @@ const (
 	driverPostgreSQL = "postgres"
 )
 
-func NewConnection(cfg *config.Config) (*gorm.DB, error) {
+func NewConnection() (*gorm.DB, error) {
 	var (
 		dsn string
 		log = logger.NewLogger().Logger.With().Str("pkg", "main").Logger()
@@ -24,14 +24,14 @@ func NewConnection(cfg *config.Config) (*gorm.DB, error) {
 
 	gormConfig := &gorm.Config{}
 
-	switch cfg.DBconfig.DBdriver {
+	switch config.DBDriver() {
 	case driverMySQL:
-		dsn = fmt.Sprintf(`%s:%s@tcp(%s:%s)/%s`,
-			cfg.DBconfig.DBuser,
-			cfg.DBconfig.DBpassword,
-			cfg.DBconfig.DBhost,
-			cfg.DBconfig.DBport,
-			cfg.DBconfig.DBname,
+		dsn = fmt.Sprintf(`%s:%s@tcp(%s:%d)/%s`,
+			config.DBUser(),
+			config.DBPassword(),
+			config.DBHost(),
+			config.DBPort(),
+			config.DBName(),
 		)
 
 		dbConn, err := gorm.Open(mysql.Open(dsn), gormConfig)
@@ -44,12 +44,12 @@ func NewConnection(cfg *config.Config) (*gorm.DB, error) {
 		return dbConn, nil
 
 	case driverPostgreSQL:
-		dsn = fmt.Sprintf("host=%s user=%s password=%s dbname=%s port=%s sslmode=disable",
-			cfg.DBconfig.DBhost,
-			cfg.DBconfig.DBuser,
-			cfg.DBconfig.DBpassword,
-			cfg.DBconfig.DBname,
-			cfg.DBconfig.DBport,
+		dsn = fmt.Sprintf("host=%s user=%s password=%s dbname=%s port=%d sslmode=disable",
+			config.DBHost(),
+			config.DBUser(),
+			config.DBPassword(),
+			config.DBName(),
+			config.DBPort(),
 		)
 
 		dbConn, err := gorm.Open(postgres.Open(dsn), gormConfig)

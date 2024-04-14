@@ -12,11 +12,11 @@ type Redis struct {
 	client *redis.Client
 }
 
-func NewRedis(cfg *config.Config) *Redis {
+func NewRedis() *Redis {
 	client := redis.NewClient(&redis.Options{
-		Addr:     fmt.Sprintf("%s:%d", cfg.Redis.RedisHost, cfg.Redis.RedisPort),
-		Password: cfg.Redis.RedisPassword,
-		DB:       cfg.Redis.RedisDB,
+		Addr:     fmt.Sprintf("%s:%d", config.RedisHost(), config.RedisPort()),
+		Password: config.RedisPassword(),
+		DB:       config.RedisDB(),
 	})
 	return &Redis{client: client}
 }
