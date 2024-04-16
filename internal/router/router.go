@@ -1,6 +1,7 @@
 package router
 
 import (
+	"go-simple-template/config"
 	"go-simple-template/factory"
 	"go-simple-template/internal/dto"
 	"go-simple-template/internal/handler"
@@ -37,7 +38,7 @@ func (r *Router) Init() *echo.Echo {
 
 	e.Use(
 		middleware.Logger(),
-		tracemiddleware.EchoMiddleware("svcname"),
+		tracemiddleware.EchoMiddleware(config.AppName()),
 	)
 
 	// repository
