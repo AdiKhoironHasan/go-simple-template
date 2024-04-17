@@ -1,6 +1,7 @@
 package router
 
 import (
+	"fmt"
 	"go-simple-template/config"
 	"go-simple-template/factory"
 	"go-simple-template/internal/dto"
@@ -12,6 +13,7 @@ import (
 	tracemiddleware "go-simple-template/pkg/tracer/middleware"
 
 	"github.com/labstack/echo/v4"
+	"github.com/labstack/echo/v4/middleware"
 )
 
 func New(opts ...Option) *Router {
@@ -33,6 +35,7 @@ func (r *Router) Init() *echo.Echo {
 	e := echo.New()
 
 	e.Use(
+		middleware.Recover(),
 		tracemiddleware.EchoMiddleware(config.AppName()),
 	)
 
@@ -49,7 +52,7 @@ func (r *Router) Init() *echo.Echo {
 	e.GET("/", func(c echo.Context) error {
 		return c.JSON(http.StatusOK, dto.ApiResponse{
 			Code:    http.StatusOK,
-			Message: "Welcome to Go Simple Template",
+			Message: fmt.Sprintf("Welcome to %s", config.AppName()),
 		})
 	})
 
