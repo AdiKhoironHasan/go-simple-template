@@ -1,29 +1,78 @@
 package logger
 
 import (
-	"os"
+	"context"
+	"go-simple-template/config"
+	"sync"
 
-	"github.com/rs/zerolog"
-	"github.com/rs/zerolog/log"
+	"go.uber.org/zap"
+	"go.uber.org/zap/zapcore"
 )
 
-type logger struct {
-	Logger zerolog.Logger
-}
+type logKey struct{}
 
-func NewLogger() *logger {
-	zerolog.SetGlobalLevel(zerolog.DebugLevel)
+var (
+	once   sync.Once
+	logCfg zap.Config
+	logger *zap.Logger
+)
 
-	// Initialize logger with console output
-	log.Logger = log.Output(zerolog.ConsoleWriter{
-		Out:        os.Stderr,
-		TimeFormat: "2006-01-02 15:04:05",
+func Init() *zap.Logger {
+	once.Do(func() {
+		var (
+			isDevelopment = config.AppEnv() == "development"
+			minLogLevel   = zap.DebugLevel
+		)
+
+		if !isDevelopment {
+			minLogLevel = zap.InfoLevel
+		}
+
+		logCfg = zap.Config{
+			Development:      false,
+			Encoding:         "json",
+			OutputPaths:      []string{"stdout"},
+			ErrorOutputPaths: []string{"stderr"},
+			Level:            zap.NewAtomicLevelAt(minLogLevel),
+			EncoderConfig: zapcore.EncoderConfig{
+				MessageKey:     "message",
+				LevelKey:       "level",
+				TimeKey:        "time",
+				CallerKey:      "caller",
+				EncodeDuration: zapcore.StringDurationEncoder,
+				EncodeLevel:    zapcore.LowercaseLevelEncoder,
+				EncodeTime:     zapcore.ISO8601TimeEncoder,
+				EncodeCaller:   zapcore.ShortCallerEncoder,
+			},
+			DisableStacktrace: true,
+		}
+
+		zapLog, err := logCfg.Build()
+		if err != nil {
+			panic(err)
+		}
+
+		logger = zapLog
+
 	})
 
-	// Set custom caller hook to include line number
-	log.Logger = log.With().Caller().Logger()
+	return logger
+}
 
-	return &logger{
-		Logger: log.Logger,
+func FromCtx(ctx context.Context) *zap.Logger {
+	if l, ok := ctx.Value(logKey{}).(*zap.Logger); ok {
+		return l
 	}
+
+	return nil
+}
+
+func WithCtx(ctx context.Context, l *zap.Logger) context.Context {
+	if lp, ok := ctx.Value(logKey{}).(*zap.Logger); ok {
+		if lp == l {
+			return ctx
+		}
+	}
+
+	return context.WithValue(ctx, logKey{}, l)
 }

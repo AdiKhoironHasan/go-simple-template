@@ -4,6 +4,7 @@ import (
 	"go-simple-template/pkg/cachex"
 	"go-simple-template/pkg/storagex"
 
+	"go.uber.org/zap"
 	"gorm.io/gorm"
 )
 
@@ -11,7 +12,7 @@ type Factory struct {
 	Db      *gorm.DB
 	Storage *storagex.Storage
 	Cache   *cachex.Cache
-	// Queue   *asynq.Client
+	Logger  *zap.Logger
 }
 
 func New(opts ...Option) *Factory {

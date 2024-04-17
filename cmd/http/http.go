@@ -8,11 +8,15 @@ import (
 	"go-simple-template/internal/server"
 	"go-simple-template/pkg/cachex"
 	"go-simple-template/pkg/cachex/redis"
+	"go-simple-template/pkg/logger"
 	"go-simple-template/pkg/storagex"
 	"go-simple-template/pkg/storagex/minio"
+
+	"go.uber.org/zap"
 )
 
 func Start(ctx context.Context) {
+	log := logger.FromCtx(ctx)
 
 	redis := redis.NewRedis()
 
@@ -20,12 +24,12 @@ func Start(ctx context.Context) {
 
 	db, err := database.NewConnection()
 	if err != nil {
-		// log.Fatal().Err(err).Msg("Failed to connect to database")
+		log.Fatal("Failed to connect to database", zap.Error(err))
 	}
 
 	minio, err := minio.NewMinio()
 	if err != nil {
-		// log.Fatal().Err(err).Msg("Failed to connect to minio")
+		log.Fatal("Failed to connect to Minio", zap.Error(err))
 	}
 
 	storage := storagex.NewStorage(minio)
@@ -34,6 +38,7 @@ func Start(ctx context.Context) {
 		factory.WithCache(cache),
 		factory.WithDB(db),
 		factory.WithStorage(storage),
+		factory.WithLogger(log),
 	)
 
 	router := router.New(
@@ -44,6 +49,6 @@ func Start(ctx context.Context) {
 	defer server.Done()
 
 	if err := server.Run(ctx); err != nil {
-		// log.Fatal().Err(err).Msg("Failed to start the server")
+		log.Fatal("Failed to start the server", zap.Error(err))
 	}
 }

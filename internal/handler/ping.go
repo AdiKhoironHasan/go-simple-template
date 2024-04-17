@@ -18,6 +18,7 @@ func (h *PingHandler) Ping(c echo.Context) error {
 		span.AddError(err)
 		response := utils.ApiResponse().
 			WithErrors(utils.ErrorResponse("", err.Error())).
+			WithTraceId(span.TraceId()).
 			WithCode(http.StatusInternalServerError).
 			WithMessage("failed to ping")
 		return c.JSON(response.Code, response)

@@ -4,10 +4,11 @@ import (
 	"context"
 	"go-simple-template/cmd/http"
 	"go-simple-template/config"
+	"go-simple-template/pkg/logger"
 	"go-simple-template/pkg/tracer"
-	"log"
 
 	"github.com/spf13/cobra"
+	"go.uber.org/zap"
 )
 
 func init() {
@@ -17,12 +18,14 @@ func init() {
 func Start() {
 	rootCmd := &cobra.Command{}
 
-	ctx, cancel := context.WithCancel(context.Background())
-	defer cancel()
+	log := logger.Init()
+	defer log.Sync()
+
+	ctx := logger.WithCtx(context.Background(), log)
 
 	tp, err := tracer.JaegerTraceProvider()
 	if err != nil {
-		log.Fatalf("failed to create trace provider: %v", err)
+		log.Fatal("Failed to create trace provider", zap.Error(err))
 	}
 
 	tracer.RegisterTracer(tp)
@@ -39,6 +42,6 @@ func Start() {
 
 	rootCmd.AddCommand(cmd...)
 	if err := rootCmd.Execute(); err != nil {
-		log.Fatalf("failed to execute command: %v", err)
+		log.Fatal("Failed to execute command", zap.Error(err))
 	}
 }

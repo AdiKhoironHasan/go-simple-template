@@ -4,8 +4,8 @@ import (
 	"errors"
 	"fmt"
 	"go-simple-template/config"
-	"go-simple-template/pkg/logger"
 
+	"github.com/rs/zerolog/log"
 	"gorm.io/driver/mysql"
 	"gorm.io/driver/postgres"
 	"gorm.io/gorm"
@@ -19,7 +19,6 @@ const (
 func NewConnection() (*gorm.DB, error) {
 	var (
 		dsn string
-		log = logger.NewLogger().Logger.With().Str("pkg", "main").Logger()
 	)
 
 	gormConfig := &gorm.Config{}

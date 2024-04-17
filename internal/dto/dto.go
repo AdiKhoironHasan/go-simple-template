@@ -25,6 +25,7 @@ Errors is a slice of Error struct to define error response
 type Meta struct {
 	Pagination *Pagination `json:"pagination,omitempty"`
 	Errors     []Error     `json:"errors,omitempty"`
+	Trace      *Trace      `json:"trace,omitempty"`
 }
 
 /*
@@ -61,11 +62,9 @@ type Error struct {
 	Message string `json:"message,omitempty"`
 }
 
-// func (resp *ApiResponse) WithMeta(meta *Meta) *ApiResponse {
-// 	resp.Meta = meta
-
-// 	return resp
-// }
+type Trace struct {
+	TraceId string `json:"trace_id"`
+}
 
 func (resp *ApiResponse) WithData(data interface{}) *ApiResponse {
 	resp.Data = data
@@ -112,6 +111,22 @@ func (resp *ApiResponse) WithErrors(errors ...Error) *ApiResponse {
 		}
 	} else {
 		resp.Meta.Errors = errors
+	}
+
+	return resp
+}
+
+func (resp *ApiResponse) WithTraceId(traceId string) *ApiResponse {
+	if resp.Meta == nil {
+		resp.Meta = &Meta{
+			Trace: &Trace{
+				TraceId: traceId,
+			},
+		}
+	} else {
+		resp.Meta.Trace = &Trace{
+			TraceId: traceId,
+		}
 	}
 
 	return resp

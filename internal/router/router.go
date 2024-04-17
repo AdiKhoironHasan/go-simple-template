@@ -12,13 +12,10 @@ import (
 	tracemiddleware "go-simple-template/pkg/tracer/middleware"
 
 	"github.com/labstack/echo/v4"
-	"github.com/labstack/echo/v4/middleware"
 )
 
 func New(opts ...Option) *Router {
-	r := &Router{
-		// Router: echo.New().Router(),
-	}
+	r := &Router{}
 
 	for _, opt := range opts {
 		opt(r)
@@ -29,7 +26,6 @@ func New(opts ...Option) *Router {
 
 // Router registers routes to be matched and dispatches a handler.
 type Router struct {
-	// *echo.Router
 	*factory.Factory
 }
 
@@ -37,15 +33,14 @@ func (r *Router) Init() *echo.Echo {
 	e := echo.New()
 
 	e.Use(
-		middleware.Logger(),
 		tracemiddleware.EchoMiddleware(config.AppName()),
 	)
 
 	// repository
-	pingRepo := repository.NewPing().WithDB(r.Db).WithCache(r.Cache)
+	pingRepo := repository.NewPing(r.Db, r.Cache)
 
 	// service
-	pingService := service.NewPing(pingRepo, r.Storage)
+	pingService := service.NewPing(r.Logger, pingRepo, r.Storage)
 
 	// handler
 	pingHandler := handler.NewPing(pingService)

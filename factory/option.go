@@ -4,6 +4,7 @@ import (
 	"go-simple-template/pkg/cachex"
 	"go-simple-template/pkg/storagex"
 
+	"go.uber.org/zap"
 	"gorm.io/gorm"
 )
 
@@ -35,8 +36,8 @@ func WithCache(cache *cachex.Cache) Option {
 	})
 }
 
-// func WithQueue(queue *asynq.Client) Option {
-// 	return optionFunc(func(dep *Factory) {
-// 		dep.Queue = queue
-// 	})
-// }
+func WithLogger(logger *zap.Logger) Option {
+	return optionFunc(func(dep *Factory) {
+		dep.Logger = logger
+	})
+}
