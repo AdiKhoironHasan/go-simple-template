@@ -1,9 +1,10 @@
-package http
+package rest
 
 import (
 	"context"
 	"go-simple-template/factory"
 	"go-simple-template/internal/database"
+	"go-simple-template/internal/rabbitmq"
 	"go-simple-template/internal/router"
 	"go-simple-template/internal/server"
 	"go-simple-template/pkg/cachex"
@@ -34,11 +35,16 @@ func Start(ctx context.Context) {
 
 	storage := storagex.NewStorage(minio)
 
+	mqConn, mqCh := rabbitmq.CreateConnection()
+
+	rmq := rabbitmq.New(mqConn, mqCh, log)
+
 	factory := factory.New(
 		factory.WithCache(cache),
 		factory.WithDB(db),
 		factory.WithStorage(storage),
 		factory.WithLogger(log),
+		factory.WithRabbitMQ(rmq),
 	)
 
 	router := router.New(

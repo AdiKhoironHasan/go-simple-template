@@ -1,6 +1,7 @@
 package factory
 
 import (
+	"go-simple-template/internal/rabbitmq"
 	"go-simple-template/pkg/cachex"
 	"go-simple-template/pkg/storagex"
 
@@ -9,10 +10,11 @@ import (
 )
 
 type Factory struct {
-	Db      *gorm.DB
-	Storage *storagex.Storage
-	Cache   *cachex.Cache
-	Logger  *zap.Logger
+	Db       *gorm.DB
+	Storage  *storagex.Storage
+	Cache    *cachex.Cache
+	Logger   *zap.Logger
+	RabbitMQ rabbitmq.RabbitMqInterface
 }
 
 func New(opts ...Option) *Factory {

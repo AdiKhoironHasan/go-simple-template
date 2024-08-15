@@ -43,7 +43,7 @@ func (r *Router) Init() *echo.Echo {
 	pingRepo := repository.NewPing(r.Db, r.Cache)
 
 	// service
-	pingService := service.NewPing(r.Logger, pingRepo, r.Storage)
+	pingService := service.NewPing(r.Logger, pingRepo, r.Storage, &r.RabbitMQ)
 
 	// handler
 	pingHandler := handler.NewPing(pingService)

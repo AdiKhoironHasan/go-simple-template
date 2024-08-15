@@ -9,6 +9,7 @@ require (
 	github.com/joho/godotenv v1.5.1
 	github.com/labstack/echo/v4 v4.11.4
 	github.com/minio/minio-go v6.0.14+incompatible
+	github.com/rabbitmq/amqp091-go v1.9.0
 	github.com/rs/zerolog v1.29.1
 	github.com/spf13/cobra v1.8.0
 	github.com/spf13/viper v1.18.2

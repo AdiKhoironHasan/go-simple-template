@@ -2,6 +2,7 @@ package service
 
 import (
 	"context"
+	"go-simple-template/internal/rabbitmq"
 	"go-simple-template/internal/repository"
 	"go-simple-template/pkg/storagex"
 	"go-simple-template/pkg/tracer"
@@ -13,13 +14,15 @@ type pingService struct {
 	log     *zap.Logger
 	repo    repository.PingRepository
 	storage *storagex.Storage
+	rmq     *rabbitmq.RabbitMqInterface
 }
 
-func NewPing(log *zap.Logger, repo repository.PingRepository, Storage *storagex.Storage) *pingService {
+func NewPing(log *zap.Logger, repo repository.PingRepository, Storage *storagex.Storage, rmq *rabbitmq.RabbitMqInterface) PingService {
 	return &pingService{
 		log:     log,
 		repo:    repo,
 		storage: Storage,
+		rmq:     rmq,
 	}
 }
 
