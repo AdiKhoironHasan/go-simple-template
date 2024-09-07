@@ -9,13 +9,13 @@ type Storer interface {
 }
 
 type Updater interface {
-	Update(ctx context.Context, input any, opts ...UpdateOption) error
+	Update(ctx context.Context, input any, opts ...Option) error
 }
 
 type Deleter interface {
-	Delete(ctx context.Context, id uint, opts ...DeleteOption) error
+	Delete(ctx context.Context, opts ...Option) error
 }
 
 type Counter interface {
-	Count(ctx context.Context, opts ...FindOption) (int, error)
+	Count(ctx context.Context, opts ...Option) (int, error)
 }
