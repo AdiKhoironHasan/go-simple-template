@@ -25,7 +25,7 @@ func NewConnection() (*gorm.DB, error) {
 
 	switch config.DBDriver() {
 	case driverMySQL:
-		dsn = fmt.Sprintf(`%s:%s@tcp(%s:%d)/%s`,
+		dsn = fmt.Sprintf(`%s:%s@tcp(%s:%d)/%s?charset=utf8mb4&parseTime=True&loc=Local`,
 			config.DBUser(),
 			config.DBPassword(),
 			config.DBHost(),

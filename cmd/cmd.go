@@ -4,6 +4,7 @@ import (
 	"context"
 	"go-simple-template/cmd/api/rest"
 	"go-simple-template/cmd/consumer"
+	"go-simple-template/cmd/migration"
 	"go-simple-template/config"
 	"go-simple-template/pkg/logger"
 	"go-simple-template/pkg/tracer"
@@ -54,13 +55,31 @@ func Start() {
 		},
 	}
 
+	migrationCmd := cobra.Command{
+		Use:   "migration",
+		Short: "migration is for running database migration",
+	}
+
+	migrationAutoMigrateCmd := cobra.Command{
+		Use:   "automigrate",
+		Short: "automigrate is for running database automigrate",
+		Run: func(cmd *cobra.Command, args []string) {
+			migration.AutoMigrate()
+			log.Info("Automigrate success")
+		},
+	}
+
 	// Register command to consumer command
 	consumerCmd.AddCommand(&consumerPingCmd)
+
+	// Register command to migration command
+	migrationCmd.AddCommand(&migrationAutoMigrateCmd)
 
 	// Register command to root command
 	rootCmd.AddCommand(
 		&restCmd,
 		&consumerCmd,
+		&migrationCmd,
 	)
 
 	// Execute root command
