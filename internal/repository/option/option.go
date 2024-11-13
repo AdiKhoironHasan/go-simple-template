@@ -1,15 +1,39 @@
-package repository
+package option
 
-import "gorm.io/gorm"
+import (
+	"gorm.io/gorm"
+)
 
 type Option func(*gorm.DB) *gorm.DB
 
 // WithWhereClause is a function that takes a condition and returns a pointer to a gorm.DB.
 // This allows us to chain multiple options together to build a query.
 // This function can used for actions SELECT, UPDATE, DELETE.
-func WithWhereClause(condition interface{}) Option {
+func WithWhereClause(condition interface{}, args ...interface{}) Option {
 	return func(db *gorm.DB) *gorm.DB {
-		return db.Where(condition)
+		return db.Where(condition, args...)
+	}
+}
+
+// WithOrWhereClause is a function that takes a condition and returns a pointer to a gorm.DB.
+// This allows us to chain multiple options together to build a query.
+// This function can used for actions SELECT, UPDATE, DELETE.
+func WithOrWhereClause(condition interface{}, args ...interface{}) Option {
+	return func(db *gorm.DB) *gorm.DB {
+		return db.Or(condition, args...)
+	}
+}
+
+// WithJoins is a function that takes a list of joins and returns a pointer to a gorm.DB.
+// This function is used to join tables.
+// This function can be used for actions SELECT.
+func WithJoins(joins ...string) Option {
+	return func(db *gorm.DB) *gorm.DB {
+		for _, join := range joins {
+			db = db.Joins(join)
+		}
+
+		return db
 	}
 }
 
@@ -79,5 +103,14 @@ func WithCount(count *int64) Option {
 func WithSoftDelete() Option {
 	return func(db *gorm.DB) *gorm.DB {
 		return db.Where("deleted_at IS NULL")
+	}
+}
+
+// WithNewSession is a function that returns a pointer to a gorm.DB.
+// This sets the session to a new session.
+// This function can be used for ALL actions.
+func WithNewSession() Option {
+	return func(db *gorm.DB) *gorm.DB {
+		return db.Session(&gorm.Session{NewDB: true})
 	}
 }

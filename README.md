@@ -2,11 +2,12 @@
 This is a simple template/boilerplate for creating services in Go. It provides a basic structure and common functionalities to kickstart your service development.
 
 ### I use existing libs :
-- [Godotenv](github.com/joho/godotenv) for read .env config
--	[Echo](github.com/labstack/echo/v4) for routing framework
--	[Zerolog](github.com/rs/zerolog) for logging
--	[Testify](github.com/stretchr/testify) for unit testing
--	[GORM](gorm.io/gorm) for database operation
+- [Echo](github.com/labstack/echo/v4) for routing framework
+- [Zap](go.uber.org/zap) for logging
+- [Viper](github.com/spf13/viper) for configuration
+- [Cobra](github.com/spf13/cobra) for CLI
+- [Testify](github.com/stretchr/testify) for unit testing
+- [GORM](gorm.io/gorm) for database operation
 
 ### How To Use?
 1. Begin by cloning the repository to your local machine.

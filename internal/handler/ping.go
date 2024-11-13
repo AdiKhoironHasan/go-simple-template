@@ -1,8 +1,7 @@
 package handler
 
 import (
-	"go-simple-template/internal/dto"
-	"go-simple-template/internal/pkg/utils"
+	"go-simple-template/pkg/api/rest"
 	"go-simple-template/pkg/tracer"
 	"net/http"
 
@@ -16,16 +15,13 @@ func (h *PingHandler) Ping(c echo.Context) error {
 	err := h.service.Ping(ctx)
 	if err != nil {
 		span.AddError(err)
-		response := utils.ApiResponse().
-			WithErrors(utils.ErrorResponse("", err.Error())).
+		response := rest.ApiResponse().
+			WithErrors(rest.ErrorResponse("", err.Error())).
 			WithTraceId(span.TraceId()).
-			WithCode(http.StatusInternalServerError).
-			WithMessage("failed to ping")
-		return c.JSON(response.Code, response)
+			WithCode(http.StatusInternalServerError)
+		return c.JSON(response.Meta.Code, response)
 	}
 
-	return c.JSON(http.StatusOK, dto.ApiResponse{
-		Code:    http.StatusOK,
-		Message: "pong",
-	})
+	response := rest.ApiResponse()
+	return c.JSON(response.Meta.Code, response)
 }

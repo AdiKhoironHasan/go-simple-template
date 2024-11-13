@@ -1,18 +1,13 @@
-package dto
-
-import "net/http"
+package rest
 
 /*
-ApiResponse is a struct to define the response
+Response is a struct to define the response
 Meta is a struct to define meta response
-Message is a string to define the message of the response
 Data is an interface to define the data of the response
 */
-type ApiResponse struct {
-	Code    int         `json:"code"`
-	Meta    *Meta       `json:"meta,omitempty"`
-	Message string      `json:"message"`
-	Data    interface{} `json:"data,omitempty"`
+type Response struct {
+	Meta Meta        `json:"meta"`
+	Data interface{} `json:"data,omitempty"`
 }
 
 /*
@@ -20,9 +15,12 @@ Meta is a struct to define meta response
 Code is an integer to define the status code of the response
 Status is a string to define the status of the response
 Pagination is a struct to define pagination response
+Message is a string to define the message of the response
 Errors is a slice of Error struct to define error response
 */
 type Meta struct {
+	Code       int         `json:"code"`
+	Message    string      `json:"message"`
 	Pagination *Pagination `json:"pagination,omitempty"`
 	Errors     []Error     `json:"errors,omitempty"`
 	Trace      *Trace      `json:"trace,omitempty"`
@@ -64,70 +62,4 @@ type Error struct {
 
 type Trace struct {
 	TraceId string `json:"trace_id"`
-}
-
-func (resp *ApiResponse) WithData(data interface{}) *ApiResponse {
-	resp.Data = data
-
-	return resp
-}
-
-func (resp *ApiResponse) WithCode(code int) *ApiResponse {
-	resp.Code = code
-
-	if resp.Message == http.StatusText(http.StatusOK) {
-		resp.Message = http.StatusText(code)
-	}
-
-	return resp
-}
-
-func (resp *ApiResponse) WithMessage(message string) *ApiResponse {
-	resp.Message = message
-
-	return resp
-}
-
-func (resp *ApiResponse) WithPagination(pagination *Pagination) *ApiResponse {
-	if resp.Meta == nil {
-		resp.Meta = &Meta{
-			Pagination: pagination,
-		}
-	} else {
-		resp.Meta.Pagination = pagination
-	}
-
-	return resp
-}
-
-func (resp *ApiResponse) WithErrors(errors ...Error) *ApiResponse {
-	if len(errors) == 0 {
-		return resp
-	}
-
-	if resp.Meta == nil {
-		resp.Meta = &Meta{
-			Errors: errors,
-		}
-	} else {
-		resp.Meta.Errors = errors
-	}
-
-	return resp
-}
-
-func (resp *ApiResponse) WithTraceId(traceId string) *ApiResponse {
-	if resp.Meta == nil {
-		resp.Meta = &Meta{
-			Trace: &Trace{
-				TraceId: traceId,
-			},
-		}
-	} else {
-		resp.Meta.Trace = &Trace{
-			TraceId: traceId,
-		}
-	}
-
-	return resp
 }

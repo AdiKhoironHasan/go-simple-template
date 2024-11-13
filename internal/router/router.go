@@ -4,12 +4,11 @@ import (
 	"fmt"
 	"go-simple-template/config"
 	"go-simple-template/factory"
-	"go-simple-template/internal/dto"
 	"go-simple-template/internal/handler"
 	"go-simple-template/internal/repository"
 	"go-simple-template/internal/service"
-	"net/http"
 
+	"go-simple-template/pkg/api/rest"
 	tracemiddleware "go-simple-template/pkg/tracer/middleware"
 
 	"github.com/labstack/echo/v4"
@@ -50,14 +49,11 @@ func (r *Router) Init() *echo.Echo {
 
 	// init routes
 	e.GET("/", func(c echo.Context) error {
-		return c.JSON(http.StatusOK, dto.ApiResponse{
-			Code:    http.StatusOK,
-			Message: fmt.Sprintf("Welcome to %s", config.AppName()),
-		})
+		response := rest.ApiResponse().WithMessage(fmt.Sprintf("Welcome to %s", config.AppName()))
+		return c.JSON(response.Meta.Code, response)
 	})
 
-	// ping
-	e.GET("/ping", pingHandler.Ping)
+	r.pingRouter(e, pingHandler)
 
 	return e
 }
