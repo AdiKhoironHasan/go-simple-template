@@ -1,0 +1,28 @@
+.git
+.gitignore
+.vscode/
+.idea/
+
+# Documentation
+README.md
+CLAUDE.md
+LICENSE
+AUTHORS.md
+CONTRIBUTING.md
+NOTICE
+
+# Build artifacts
+bin/
+obj/
+*.log
+*.out
+*.test
+
+# Environment (secrets — must NOT be baked into image)
+.env
+
+# Deployment files
+deployment/
+
+# Test data
+testdata/
