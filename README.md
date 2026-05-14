@@ -45,16 +45,16 @@ internal/
 ### Flow
 
 ```
-HTTP Request → Handler → DTO → Service (app/) → Port (core/) → Adapter (outbound/) → DB
+HTTP Request --> DTO --> Adapter(inbound) --> Port(inbound) --> Service(app) --> Port(outbound) --> Adapter(outbound)
 ```
 
 All dependencies flow **inward**. The core layer has zero knowledge of transport or infrastructure.
 
 ## Prerequisites
 
-- **Go** 1.22+
+- **Go** 1.26+
 - **MongoDB**
-- **Redis** (optional, for cache health checks)
+- **Redis** 
 
 ## Getting Started
 
@@ -64,22 +64,29 @@ All dependencies flow **inward**. The core layer has zero knowledge of transport
 git clone <repo-url>
 cd go-simple-template
 cp .env.example .env
-# Edit .env with your database credentials
+# Edit .env with your database credentials (or use Docker Compose defaults)
 ```
 
-### 2. Install Dependencies
+### 2. Run with Docker Compose (Recommended)
+
+```bash
+make docker-up
+```
+This starts the REST API, MongoDB, and Redis containers with the default environment.
+
+### 3. Install Dependencies (For Local Dev)
 
 ```bash
 make install
 ```
 
-### 3. Run the Server
+### 4. Run the Server (Local)
 
 ```bash
 make run-rest
 ```
 
-The server starts on the port defined in `APP_PORT` (default: `8080`).
+The local server starts on the port defined in `APP_PORT` (default: `8080`).
 
 ### 4. Verify
 
@@ -120,7 +127,9 @@ curl "localhost:8080/healthz?mongodb=true&redis=true"
 | Command | Description |
 |---|---|
 | `make install` | Download dependencies & vendor |
-| `make run-rest` | Run REST API server |
+| `make run-rest` | Run REST API server locally |
+| `make docker-up` | Start all services via Docker Compose |
+| `make docker-down` | Stop all Docker services |
 
 ## Testing
 
