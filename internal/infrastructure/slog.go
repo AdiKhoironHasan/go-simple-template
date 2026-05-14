@@ -54,15 +54,11 @@ func (s slogHandler) WithGroup(name string) slog.Handler {
 
 // Handle implements slog.Handler interface to handle the log record.
 func (s slogHandler) Handle(ctx context.Context, record slog.Record) error {
-	if ctx == nil {
-		goto next
+	if ctx != nil {
+		if requestID, ok := ctx.Value(consts.CtxRequestId).(string); ok && requestID != "" {
+			record.AddAttrs(slog.String(consts.CtxRequestId.String(), requestID))
+		}
 	}
-
-	if requestID, ok := ctx.Value(consts.CtxRequestId).(string); ok && requestID != "" {
-		record.AddAttrs(slog.String(consts.CtxRequestId.String(), requestID))
-	}
-
-next:
 
 	return s.handler.Handle(ctx, record)
 }

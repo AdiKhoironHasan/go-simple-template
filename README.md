@@ -1,27 +1,148 @@
 # go-simple-template
-This is a simple template/boilerplate for creating services in Go. It provides a basic structure and common functionalities to kickstart your service development.
 
-### I use existing libs :
-- [Echo](github.com/labstack/echo/v4) for routing framework
-- [Zap](go.uber.org/zap) for logging
-- [Viper](github.com/spf13/viper) for configuration
-- [Cobra](github.com/spf13/cobra) for CLI
-- [Testify](github.com/stretchr/testify) for unit testing
-- [GORM](gorm.io/gorm) for database operation
+A production-ready Go service boilerplate following **Hexagonal Architecture** (Ports and Adapters). Designed for clean separation of concerns, testability, and scalability.
 
-### How To Use?
-1. Begin by cloning the repository to your local machine.
-2. Set up your database.
-3. Create an environment file by duplicating the .env.example file and filling in the required values for each service according to your needs.
-4. Install the necessary dependencies.
+## Architecture
+
 ```
-go mod tidy
+cmd/                          → Entrypoints & Composition Root
+├── main.go                   → Cobra CLI bootstrap
+└── api/rest/cmd.go           → REST server wiring (DI)
+
+internal/
+├── core/                     → Domain (pure business logic, zero dependencies)
+│   ├── domain/entity/        → Domain entities
+│   └── port/                 → Interfaces (contracts)
+│       ├── inbound/          → Driving ports (service interfaces)
+│       └── outbound/         → Driven ports (repository interfaces)
+│
+├── app/                      → Application services (use cases)
+│   └── health/               → Health check use case
+│
+├── adapter/                  → Infrastructure adapters
+│   ├── inbound/rest/         → REST driving adapter
+│   │   ├── handler/          → HTTP handlers
+│   │   ├── dto/              → Request/Response DTOs
+│   │   ├── router/           → Route registration
+│   │   ├── server/           → Echo server setup
+│   │   ├── middleware/       → HTTP middlewares
+│   │   └── utils/            → Error mapping (domain → HTTP)
+│   └── outbound/             → Driven adapters
+│       ├── mongo/health/     → MongoDB health repository
+│       └── redis/health/     → Redis health cache repository
+│
+├── infrastructure/           → Technical setup (DB clients, logger)
+│   ├── mongodb.go
+│   ├── redis.go
+│   └── slog.go
+│
+└── pkg/                      → Shared internal packages
+    ├── config/               → Environment configuration
+    ├── consts/               → Constants
+    └── errs/                 → Domain error system
 ```
-5. Run the program
+
+### Flow
+
 ```
-go run main.go
+HTTP Request → Handler → DTO → Service (app/) → Port (core/) → Adapter (outbound/) → DB
 ```
-6. Test liveness
+
+All dependencies flow **inward**. The core layer has zero knowledge of transport or infrastructure.
+
+## Prerequisites
+
+- **Go** 1.22+
+- **MongoDB**
+- **Redis** (optional, for cache health checks)
+
+## Getting Started
+
+### 1. Clone & Configure
+
+```bash
+git clone <repo-url>
+cd go-simple-template
+cp .env.example .env
+# Edit .env with your database credentials
 ```
-curl --location 'localhost:8080/healthz'
-````
+
+### 2. Install Dependencies
+
+```bash
+make install
+```
+
+### 3. Run the Server
+
+```bash
+make run-rest
+```
+
+The server starts on the port defined in `APP_PORT` (default: `8080`).
+
+### 4. Verify
+
+```bash
+# Basic health
+curl localhost:8080/healthz
+
+# Full health check (MongoDB + Redis)
+curl "localhost:8080/healthz?mongodb=true&redis=true"
+```
+
+## Environment Variables
+
+| Variable | Description | Default |
+|---|---|---|
+| `APP_NAME` | Application name | `go-simple-template` |
+| `APP_VERSION` | Application version | `1.0.0` |
+| `APP_PORT` | HTTP server port | `8080` |
+| `APP_DEBUG` | Enable debug logging | `true` |
+| `MONGODB_PROTOCOL` | MongoDB protocol | `mongodb` |
+| `MONGODB_ADDRESS` | MongoDB host:port | `localhost:27017` |
+| `MONGODB_USERNAME` | MongoDB username | |
+| `MONGODB_PASSWORD` | MongoDB password | |
+| `MONGODB_NAME` | Database name | `go-simple` |
+| `MONGODB_OPTION` | Connection string options | |
+| `MONGODB_MAX_CONN_OPEN` | Max open connections | `100` |
+| `MONGODB_MAX_CONN_IDLE` | Max idle connections | `10` |
+| `MONGODB_MAX_CONN_LIFETIME` | Connection max lifetime | `1h` |
+| `REDIS_HOST` | Redis host | `localhost` |
+| `REDIS_PORT` | Redis port | `6379` |
+| `REDIS_USERNAME` | Redis username | |
+| `REDIS_PASSWORD` | Redis password | |
+| `REDIS_DB` | Redis database number | `0` |
+| `REDIS_TLS` | Enable TLS | `false` |
+
+## Makefile Commands
+
+| Command | Description |
+|---|---|
+| `make install` | Download dependencies & vendor |
+| `make run-rest` | Run REST API server |
+
+## Testing
+
+```bash
+# Run all tests
+go test ./...
+
+# Run with verbose output
+go test -v ./...
+
+# Run specific package
+go test -v ./internal/app/health/...
+```
+
+## Key Design Decisions
+
+- **Hexagonal Architecture** — Domain logic is fully decoupled from transport and infrastructure.
+- **Composition Root** — All dependency wiring happens explicitly in `cmd/api/rest/cmd.go`.
+- **Domain Errors** — `internal/pkg/errs` provides protocol-agnostic error codes (`NOT_FOUND`, `CONFLICT`, etc.) translated to HTTP at the adapter layer.
+- **Concurrent Health Checks** — Uses `errgroup` for parallel MongoDB + Redis ping.
+- **Mock Generation** — Uses `go.uber.org/mock` with `//go:generate mockgen` directives on port interfaces.
+
+## License
+
+MIT
