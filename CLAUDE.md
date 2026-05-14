@@ -68,6 +68,8 @@ Dependencies ALWAYS flow inward. Never reference outer layers from inner layers.
 
 ```bash
 make install          # go mod tidy && go mod vendor
+make docker-up        # start all services via Docker Compose
+make docker-down      # stop docker services
 make run-rest         # go run cmd/main.go rest
 go test ./...         # run all tests
 go build ./...        # verify compilation
