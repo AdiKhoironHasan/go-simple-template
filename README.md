@@ -23,5 +23,5 @@ go run main.go
 ```
 6. Test liveness
 ```
-curl --location 'localhost:8080/ping'
+curl --location 'localhost:8080/healthz'
 ````

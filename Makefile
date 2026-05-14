@@ -1,11 +1,7 @@
-start-rest:
-	@echo "Starting REST API"
-	@go run main.go rest
+run-rest:
+	@echo "Start running REST API"
+	@go run cmd/main.go rest
 
-consumer-ping:
-	@echo "Pinging consumer"
-	@go run main.go consumer ping
-
-migration-automigrate:
-	@echo "Running migrations"
-	@go run main.go migration automigrate
+vendor:
+	@echo "Downloading dependencies..."
+	@go mod vendor
