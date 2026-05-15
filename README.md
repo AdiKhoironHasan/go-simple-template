@@ -6,8 +6,14 @@ A production-ready Go service boilerplate following **Hexagonal Architecture** (
 
 ```
 cmd/                          → Entrypoints & Composition Root
-├── main.go                   → Cobra CLI bootstrap
-└── api/rest/cmd.go           → REST server wiring (DI)
+├── main.go                   → Cobra CLI bootstrap (registers all subcommands)
+├── api/
+│   ├── rest/cmd.go           → REST server wiring (DI)
+│   └── grpc/cmd.go           → gRPC server wiring (DI)
+├── consumer/
+│   ├── rmq/cmd.go            → RabbitMQ consumer wiring
+│   └── kafka/cmd.go          → Kafka consumer wiring
+└── scheduler/cmd.go          → Cron scheduler wiring
 
 internal/
 ├── core/                     → Domain (pure business logic, zero dependencies)
