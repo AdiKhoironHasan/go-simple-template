@@ -2,20 +2,21 @@ package health
 
 import (
 	"go-simple-template/internal/core/port/inbound"
-	"go-simple-template/internal/core/port/outbound"
+	"go-simple-template/internal/core/port/outbound/cache"
+	"go-simple-template/internal/core/port/outbound/repository"
 )
 
 type service struct {
-	healthRepo      outbound.HealthRepository
-	healthCacheRepo outbound.HealthCacheRepository
+	healthRepo  repository.Health
+	healthCache cache.Health
 }
 
 func New(
-	healthRepo outbound.HealthRepository,
-	healthCacheRepo outbound.HealthCacheRepository,
+	healthRepo repository.Health,
+	healthCache cache.Health,
 ) inbound.HealthService {
 	return &service{
-		healthRepo:      healthRepo,
-		healthCacheRepo: healthCacheRepo,
+		healthRepo:  healthRepo,
+		healthCache: healthCache,
 	}
 }

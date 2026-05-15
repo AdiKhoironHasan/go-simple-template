@@ -123,8 +123,8 @@ func Start(ctx context.Context) {
     redis := infrastructure.NewRedis(ctx)
 
     // 2. Outbound Adapters
-    healthRepo := healthMongoRepo.New(mongo.Client)
-    healthCache := healthCacheRepo.NewCache(redis.Client)
+    healthRepo := healthRepo.New(mongo.Client)
+    healthCache := healthCache.NewCache(redis.Client)
 
     // 3. Application Services
     healthSvc := healthService.New(healthRepo, healthCache)

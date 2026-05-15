@@ -6,36 +6,36 @@ import (
 	"testing"
 
 	"go-simple-template/internal/core/domain/entity"
-	"go-simple-template/internal/core/port/outbound/mocks"
+	cacheMocks "go-simple-template/internal/core/port/outbound/cache/mocks"
+	repoMocks "go-simple-template/internal/core/port/outbound/repository/mocks"
 
-	"github.com/samber/lo"
 	"github.com/stretchr/testify/assert"
 	"go.uber.org/mock/gomock"
 )
 
 type testDeps struct {
-	ctrl            *gomock.Controller
-	healthRepo      *mocks.MockHealthRepository
-	healthCacheRepo *mocks.MockHealthCacheRepository
-	svc             *service
+	ctrl        *gomock.Controller
+	healthRepo  *repoMocks.MockHealth
+	healthCache *cacheMocks.MockHealth
+	svc         *service
 }
 
 func setupTest(t *testing.T) *testDeps {
 	t.Helper()
 
 	ctrl := gomock.NewController(t)
-	healthRepo := mocks.NewMockHealthRepository(ctrl)
-	healthCacheRepo := mocks.NewMockHealthCacheRepository(ctrl)
+	healthRepo := repoMocks.NewMockHealth(ctrl)
+	healthCache := cacheMocks.NewMockHealth(ctrl)
 	svc := &service{
-		healthRepo:      healthRepo,
-		healthCacheRepo: healthCacheRepo,
+		healthRepo:  healthRepo,
+		healthCache: healthCache,
 	}
 
 	return &testDeps{
-		ctrl:            ctrl,
-		healthRepo:      healthRepo,
-		healthCacheRepo: healthCacheRepo,
-		svc:             svc,
+		ctrl:        ctrl,
+		healthRepo:  healthRepo,
+		healthCache: healthCache,
+		svc:         svc,
 	}
 }
 
@@ -92,7 +92,7 @@ func TestCheckHealth(t *testing.T) {
 			name: "redis only - success",
 			req:  entity.CheckHealth{MongoDB: false, Redis: true},
 			mockSetup: func(deps *testDeps) {
-				deps.healthCacheRepo.EXPECT().CheckHealth(gomock.Any()).Return(nil)
+				deps.healthCache.EXPECT().CheckHealth(gomock.Any()).Return(nil)
 			},
 			assertFn: func(t *testing.T, got *entity.CheckHealth, err error) {
 				assert.NoError(t, err)
@@ -105,7 +105,7 @@ func TestCheckHealth(t *testing.T) {
 			name: "redis only - failure",
 			req:  entity.CheckHealth{MongoDB: false, Redis: true},
 			mockSetup: func(deps *testDeps) {
-				deps.healthCacheRepo.EXPECT().CheckHealth(gomock.Any()).Return(redisErr)
+				deps.healthCache.EXPECT().CheckHealth(gomock.Any()).Return(redisErr)
 			},
 			assertFn: func(t *testing.T, got *entity.CheckHealth, err error) {
 				assert.Error(t, err)
@@ -118,7 +118,7 @@ func TestCheckHealth(t *testing.T) {
 			req:  entity.CheckHealth{MongoDB: true, Redis: true},
 			mockSetup: func(deps *testDeps) {
 				deps.healthRepo.EXPECT().CheckHealth(gomock.Any()).Return(nil)
-				deps.healthCacheRepo.EXPECT().CheckHealth(gomock.Any()).Return(nil)
+				deps.healthCache.EXPECT().CheckHealth(gomock.Any()).Return(nil)
 			},
 			assertFn: func(t *testing.T, got *entity.CheckHealth, err error) {
 				assert.NoError(t, err)
@@ -132,7 +132,7 @@ func TestCheckHealth(t *testing.T) {
 			req:  entity.CheckHealth{MongoDB: true, Redis: true},
 			mockSetup: func(deps *testDeps) {
 				deps.healthRepo.EXPECT().CheckHealth(gomock.Any()).Return(mongoErr)
-				deps.healthCacheRepo.EXPECT().CheckHealth(gomock.Any()).Return(nil).AnyTimes()
+				deps.healthCache.EXPECT().CheckHealth(gomock.Any()).Return(nil).AnyTimes()
 			},
 			assertFn: func(t *testing.T, got *entity.CheckHealth, err error) {
 				assert.Error(t, err)
@@ -143,7 +143,7 @@ func TestCheckHealth(t *testing.T) {
 			req:  entity.CheckHealth{MongoDB: true, Redis: true},
 			mockSetup: func(deps *testDeps) {
 				deps.healthRepo.EXPECT().CheckHealth(gomock.Any()).Return(nil).AnyTimes()
-				deps.healthCacheRepo.EXPECT().CheckHealth(gomock.Any()).Return(redisErr)
+				deps.healthCache.EXPECT().CheckHealth(gomock.Any()).Return(redisErr)
 			},
 			assertFn: func(t *testing.T, got *entity.CheckHealth, err error) {
 				assert.Error(t, err)
@@ -154,7 +154,7 @@ func TestCheckHealth(t *testing.T) {
 			req:  entity.CheckHealth{MongoDB: true, Redis: true},
 			mockSetup: func(deps *testDeps) {
 				deps.healthRepo.EXPECT().CheckHealth(gomock.Any()).Return(mongoErr).AnyTimes()
-				deps.healthCacheRepo.EXPECT().CheckHealth(gomock.Any()).Return(redisErr).AnyTimes()
+				deps.healthCache.EXPECT().CheckHealth(gomock.Any()).Return(redisErr).AnyTimes()
 			},
 			assertFn: func(t *testing.T, got *entity.CheckHealth, err error) {
 				assert.Error(t, err)
@@ -183,7 +183,10 @@ func TestCheckHealth(t *testing.T) {
 			deps := setupTest(t)
 			tt.mockSetup(deps)
 
-			ctx := lo.Ternary(tt.ctx != nil, tt.ctx(), context.Background())
+			ctx := context.Background()
+			if tt.ctx != nil {
+				ctx = tt.ctx()
+			}
 
 			got, err := deps.svc.CheckHealth(ctx, tt.req)
 			tt.assertFn(t, got, err)

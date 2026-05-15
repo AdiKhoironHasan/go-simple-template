@@ -34,7 +34,7 @@ func (s *service) CheckHealth(ctx context.Context, req entity.CheckHealth) (*ent
 
 	if req.Redis {
 		eg.Go(func() error {
-			err := s.healthCacheRepo.CheckHealth(egCtx)
+			err := s.healthCache.CheckHealth(egCtx)
 			if err != nil {
 				slog.ErrorContext(egCtx, fmt.Sprintf("Failed to %s Redis", funcName), slog.String(consts.Error, err.Error()))
 				return err

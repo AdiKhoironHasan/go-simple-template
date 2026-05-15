@@ -17,10 +17,12 @@ cmd/                          → Entrypoints & Composition Root
 
 internal/
 ├── core/                     → Domain (pure business logic, zero dependencies)
-│   ├── domain/entity/        → Domain entities
+│   ├── domain/entity/        → Domain types (entities, value objects, events, enums)
 │   └── port/                 → Interfaces (contracts)
 │       ├── inbound/          → Driving ports (service interfaces)
-│       └── outbound/         → Driven ports (repository interfaces)
+│       └── outbound/         → Driven ports (concern-based)
+│           ├── repository/   → Database port interfaces
+│           └── cache/        → Cache port interfaces
 │
 ├── app/                      → Application services (use cases)
 │   └── health/               → Health check use case
@@ -40,14 +42,22 @@ internal/
 │   │   │   └── kafka/        → Kafka consumer
 │   │   └── scheduler/        → Cron/scheduled jobs
 │   │
-│   └── outbound/             → Driven adapters (external dependencies)
-│       ├── mongo/{feature}/  → MongoDB repositories
-│       ├── redis/{feature}/  → Redis cache repositories
-│       ├── postgres/         → PostgreSQL repositories
-│       ├── extapi/           → External HTTP API clients
-│       ├── rmq/              → RabbitMQ publisher
-│       ├── kafka/            → Kafka producer
-│       └── elasticsearch/    → Elasticsearch search/index
+│   └── outbound/             → Driven adapters (concern-based)
+│       ├── repository/       → Database adapters
+│       │   ├── mongo/        → MongoDB (e.g., mongo/health/)
+│       │   └── postgres/     → PostgreSQL
+│       ├── cache/            → In-memory / cache decorators
+│       │   ├── redis/        → Redis (e.g., redis/health/)
+│       │   └── memcached/    → Memcached
+│       ├── client/           → External service integrations
+│       │   ├── rest/         → REST API clients
+│       │   └── grpc/         → gRPC clients
+│       ├── messaging/        → Event/message publishers
+│       │   ├── kafka/        → Kafka producers
+│       │   └── rabbitmq/     → RabbitMQ publishers
+│       └── storage/          → File/object storage
+│           ├── s3/           → AWS S3
+│           └── gcs/          → Google Cloud Storage
 │
 ├── infrastructure/           → Technical setup (DB clients, logger)
 │   ├── mongodb.go

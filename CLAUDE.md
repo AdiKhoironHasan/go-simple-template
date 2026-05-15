@@ -31,7 +31,7 @@ Dependencies ALWAYS flow inward. Never reference outer layers from inner layers.
 ### Naming
 
 - **Ports**: Interface names in `core/port/inbound/` and `core/port/outbound/`.
-- **Adapters**: Concrete implementations in `adapter/{inbound,outbound}/{technology}/{domain}/`.
+- **Adapters**: Concrete implementations in `adapter/{inbound,outbound}/{concern}/{technology}/{feature}/`.
 - **Services**: Application use cases in `app/{domain}/`.
 - **DTOs**: Request/Response types in `adapter/inbound/rest/dto/`.
 
@@ -47,8 +47,9 @@ Dependencies ALWAYS flow inward. Never reference outer layers from inner layers.
 
 - Mocks use `go.uber.org/mock` (gomock).
 - Generated via `//go:generate mockgen` directives on port interface files.
-- Mocks live in `mocks/` subdirectory next to the port file.
+- Mocks live in `mocks/` subdirectory next to each port file.
 - Regenerate: `go generate ./internal/core/port/...`
+- In tests, import with aliases: `repoMocks "...outbound/repository/mocks"`, `cacheMocks "...outbound/cache/mocks"`
 
 ### Testing
 
@@ -82,7 +83,7 @@ go vet ./...          # static analysis
 2. Define inbound port (service interface) in `internal/core/port/inbound/`.
 3. Define outbound port (repository interface) in `internal/core/port/outbound/`.
 4. Implement application service in `internal/app/{feature}/`.
-5. Implement outbound adapter in `internal/adapter/outbound/{tech}/{feature}/`.
+5. Implement outbound adapter in `internal/adapter/outbound/{concern}/{tech}/{feature}/`.
 6. Implement inbound adapter (handler) in `internal/adapter/inbound/rest/handler/{feature}/`.
 7. Add DTO in `internal/adapter/inbound/rest/dto/`.
 8. Register route in `internal/adapter/inbound/rest/router/router.go`.

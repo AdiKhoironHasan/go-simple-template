@@ -6,8 +6,8 @@ import (
 
 	"go-simple-template/internal/adapter/inbound/rest/router"
 	"go-simple-template/internal/adapter/inbound/rest/server"
-	healthMongoRepo "go-simple-template/internal/adapter/outbound/mongo/health"
-	healthCacheRepo "go-simple-template/internal/adapter/outbound/redis/health"
+	healthRepo "go-simple-template/internal/adapter/outbound/repository/mongo/health"
+	healthCache "go-simple-template/internal/adapter/outbound/cache/redis/health"
 	healthService "go-simple-template/internal/app/health"
 	"go-simple-template/internal/infrastructure"
 )
@@ -24,11 +24,11 @@ func Start(ctx context.Context) {
 	redis.Connect(ctx)
 
 	//  Outbound Adapters (Driven)
-	healthRepo := healthMongoRepo.New(mongo.Client)
-	healthCacheRepo := healthCacheRepo.NewCache(redis.Client)
+	healthRepo := healthRepo.New(mongo.Client)
+	healthCache := healthCache.NewCache(redis.Client)
 
 	//  Application Services
-	healthSvc := healthService.New(healthRepo, healthCacheRepo)
+	healthSvc := healthService.New(healthRepo, healthCache)
 
 	//  Inbound Adapters (Driving)
 	deps := &router.Dependencies{
