@@ -20,16 +20,28 @@ internal/
 │   └── health/               → Health check use case
 │
 ├── adapter/                  → Infrastructure adapters
-│   ├── inbound/rest/         → REST driving adapter
-│   │   ├── handler/          → HTTP handlers
-│   │   ├── dto/              → Request/Response DTOs
-│   │   ├── router/           → Route registration
-│   │   ├── server/           → Echo server setup
-│   │   ├── middleware/       → HTTP middlewares
-│   │   └── utils/            → Error mapping (domain → HTTP)
-│   └── outbound/             → Driven adapters
-│       ├── mongo/health/     → MongoDB health repository
-│       └── redis/health/     → Redis health cache repository
+│   ├── inbound/              → Driving adapters (entry points)
+│   │   ├── rest/             → REST API (Echo)
+│   │   │   ├── handler/      → HTTP handlers
+│   │   │   ├── dto/          → Request/Response DTOs
+│   │   │   ├── router/       → Route registration
+│   │   │   ├── server/       → Echo server setup
+│   │   │   ├── middleware/   → HTTP middlewares
+│   │   │   └── utils/        → Error mapping (domain → HTTP)
+│   │   ├── grpc/             → gRPC server & handlers
+│   │   ├── consumer/         → Message consumers
+│   │   │   ├── rmq/          → RabbitMQ consumer
+│   │   │   └── kafka/        → Kafka consumer
+│   │   └── scheduler/        → Cron/scheduled jobs
+│   │
+│   └── outbound/             → Driven adapters (external dependencies)
+│       ├── mongo/{feature}/  → MongoDB repositories
+│       ├── redis/{feature}/  → Redis cache repositories
+│       ├── postgres/         → PostgreSQL repositories
+│       ├── extapi/           → External HTTP API clients
+│       ├── rmq/              → RabbitMQ publisher
+│       ├── kafka/            → Kafka producer
+│       └── elasticsearch/    → Elasticsearch search/index
 │
 ├── infrastructure/           → Technical setup (DB clients, logger)
 │   ├── mongodb.go
