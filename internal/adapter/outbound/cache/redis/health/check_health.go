@@ -6,7 +6,7 @@ import (
 	"log/slog"
 )
 
-func (c *cacheRepository) CheckHealth(ctx context.Context) error {
+func (c *cacheRepo) CheckHealth(ctx context.Context) error {
 	err := c.client.Ping(ctx).Err()
 	if err != nil {
 		slog.ErrorContext(ctx, "Failed to ping Redis", slog.String(consts.Error, err.Error()))

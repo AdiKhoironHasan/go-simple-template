@@ -6,7 +6,7 @@ import (
 	"log/slog"
 )
 
-func (db *repository) CheckHealth(ctx context.Context) error {
+func (db *repo) CheckHealth(ctx context.Context) error {
 	// ping to mongoDB
 	err := db.client.Ping(ctx, nil)
 	if err != nil {

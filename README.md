@@ -6,30 +6,58 @@ A production-ready Go service boilerplate following **Hexagonal Architecture** (
 
 ```
 cmd/                          → Entrypoints & Composition Root
-├── main.go                   → Cobra CLI bootstrap
-└── api/rest/cmd.go           → REST server wiring (DI)
+├── main.go                   → Cobra CLI bootstrap (registers all subcommands)
+├── api/
+│   ├── rest/cmd.go           → REST server wiring (DI)
+│   └── grpc/cmd.go           → gRPC server wiring (DI)
+├── consumer/
+│   ├── rmq/cmd.go            → RabbitMQ consumer wiring
+│   └── kafka/cmd.go          → Kafka consumer wiring
+└── scheduler/cmd.go          → Cron scheduler wiring
 
 internal/
 ├── core/                     → Domain (pure business logic, zero dependencies)
-│   ├── domain/entity/        → Domain entities
+│   ├── domain/entity/        → Domain types (entities, value objects, events, enums)
 │   └── port/                 → Interfaces (contracts)
 │       ├── inbound/          → Driving ports (service interfaces)
-│       └── outbound/         → Driven ports (repository interfaces)
+│       └── outbound/         → Driven ports (concern-based)
+│           ├── repository/   → Database port interfaces
+│           └── cache/        → Cache port interfaces
 │
 ├── app/                      → Application services (use cases)
 │   └── health/               → Health check use case
 │
 ├── adapter/                  → Infrastructure adapters
-│   ├── inbound/rest/         → REST driving adapter
-│   │   ├── handler/          → HTTP handlers
-│   │   ├── dto/              → Request/Response DTOs
-│   │   ├── router/           → Route registration
-│   │   ├── server/           → Echo server setup
-│   │   ├── middleware/       → HTTP middlewares
-│   │   └── utils/            → Error mapping (domain → HTTP)
-│   └── outbound/             → Driven adapters
-│       ├── mongo/health/     → MongoDB health repository
-│       └── redis/health/     → Redis health cache repository
+│   ├── inbound/              → Driving adapters (entry points)
+│   │   ├── rest/             → REST API (Echo)
+│   │   │   ├── handler/      → HTTP handlers
+│   │   │   ├── dto/          → Request/Response DTOs
+│   │   │   ├── router/       → Route registration
+│   │   │   ├── server/       → Echo server setup
+│   │   │   ├── middleware/   → HTTP middlewares
+│   │   │   └── utils/        → Error mapping (domain → HTTP)
+│   │   ├── grpc/             → gRPC server & handlers
+│   │   ├── consumer/         → Message consumers
+│   │   │   ├── rmq/          → RabbitMQ consumer
+│   │   │   └── kafka/        → Kafka consumer
+│   │   └── scheduler/        → Cron/scheduled jobs
+│   │
+│   └── outbound/             → Driven adapters (concern-based)
+│       ├── repository/       → Database adapters
+│       │   ├── mongo/        → MongoDB (e.g., mongo/health/)
+│       │   └── postgres/     → PostgreSQL
+│       ├── cache/            → In-memory / cache decorators
+│       │   ├── redis/        → Redis (e.g., redis/health/)
+│       │   └── memcached/    → Memcached
+│       ├── client/           → External service integrations
+│       │   ├── rest/         → REST API clients
+│       │   └── grpc/         → gRPC clients
+│       ├── messaging/        → Event/message publishers
+│       │   ├── kafka/        → Kafka producers
+│       │   └── rabbitmq/     → RabbitMQ publishers
+│       └── storage/          → File/object storage
+│           ├── s3/           → AWS S3
+│           └── gcs/          → Google Cloud Storage
 │
 ├── infrastructure/           → Technical setup (DB clients, logger)
 │   ├── mongodb.go
