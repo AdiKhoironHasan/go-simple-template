@@ -20,7 +20,7 @@ func (c *Claims) GetExpirationTime() (*jwtgo.NumericDate, error) {
 
 // GetNotBefore implements the Claims interface.
 func (c *Claims) GetNotBefore() (*jwtgo.NumericDate, error) {
-	return c.IssuedAt, nil
+	return c.NotBefore, nil
 }
 
 // GetIssuedAt implements the Claims interface.
