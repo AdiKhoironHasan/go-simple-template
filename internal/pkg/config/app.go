@@ -17,3 +17,11 @@ func AppPort() int {
 func AppDebug() bool {
 	return viper.GetBool("APP_DEBUG")
 }
+
+func AppSecretKey() string {
+	return viper.GetString("APP_SECRET_KEY")
+}
+
+func AppRefreshKey() string {
+	return viper.GetString("APP_REFRESH_KEY")
+}

@@ -2,7 +2,8 @@ package entity
 
 import "time"
 
-type Date struct {
-	StartDate time.Time
-	EndDate   time.Time
+type Base struct {
+	Id        string
+	CreatedAt time.Time
+	UpdatedAt time.Time
 }

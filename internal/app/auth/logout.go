@@ -1,0 +1,33 @@
+package auth
+
+import (
+	"context"
+	"log/slog"
+	"time"
+
+	"go-simple-template/internal/core/domain/entity"
+	"go-simple-template/internal/core/domain/errs"
+	"go-simple-template/internal/pkg/consts"
+	errpkg "go-simple-template/internal/pkg/errs"
+	"go-simple-template/internal/pkg/jwt"
+)
+
+func (s *auth) Logout(ctx context.Context, request entity.AuthToken) error {
+	claims, err := jwt.ValidateToken(request.RefreshToken, true)
+	if err != nil {
+		slog.ErrorContext(ctx, "Invalid refresh token", slog.String(consts.Error, err.Error()))
+		return errpkg.NewUnauthorized(errs.ErrMsgInvalidToken)
+	}
+
+	// saved refresh token to redis with black list
+	ttl := time.Until(claims.ExpiresAt.Time)
+	err = s.tokenCache.Blacklist(ctx, request.RefreshToken, ttl)
+	if err != nil {
+		slog.ErrorContext(ctx, "Failed to blacklist token", slog.String(consts.Error, err.Error()))
+		return err
+	}
+
+	slog.InfoContext(ctx, "User logged out successfully")
+
+	return nil
+}
