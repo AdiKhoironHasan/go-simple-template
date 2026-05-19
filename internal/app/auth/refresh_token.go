@@ -3,6 +3,7 @@ package auth
 import (
 	"context"
 	"log/slog"
+	"time"
 
 	"go-simple-template/internal/core/domain/entity"
 	"go-simple-template/internal/core/domain/errs"
@@ -12,7 +13,6 @@ import (
 )
 
 func (s *auth) RefreshToken(ctx context.Context, request entity.AuthToken) (*entity.AuthToken, error) {
-	// check blacklist
 	isBlacklisted, err := s.tokenCache.IsBlacklisted(ctx, request.RefreshToken)
 	if err != nil {
 		slog.ErrorContext(ctx, "Failed to check blacklist", slog.String(consts.Error, err.Error()))
@@ -28,6 +28,15 @@ func (s *auth) RefreshToken(ctx context.Context, request entity.AuthToken) (*ent
 	if err != nil {
 		slog.ErrorContext(ctx, "Invalid refresh token", slog.String("error", err.Error()))
 		return nil, errpkg.NewUnauthorized(errs.ErrMsgInvalidToken)
+	}
+
+	if refreshToken.ExpiresAt != nil {
+		ttl := time.Until(refreshToken.ExpiresAt.Time)
+		if ttl > 0 {
+			if blErr := s.tokenCache.Blacklist(ctx, request.RefreshToken, ttl); blErr != nil {
+				slog.ErrorContext(ctx, "Failed to blacklist old refresh token", slog.String(consts.Error, blErr.Error()))
+			}
+		}
 	}
 
 	jwtPayload := jwt.UserCtx{

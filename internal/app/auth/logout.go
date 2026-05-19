@@ -19,8 +19,16 @@ func (s *auth) Logout(ctx context.Context, request entity.AuthToken) error {
 		return errpkg.NewUnauthorized(errs.ErrMsgInvalidToken)
 	}
 
-	// saved refresh token to redis with black list
+	if claims.ExpiresAt == nil {
+		slog.ErrorContext(ctx, "Refresh token missing expiration")
+		return errpkg.NewUnauthorized(errs.ErrMsgInvalidToken)
+	}
+
 	ttl := time.Until(claims.ExpiresAt.Time)
+	if ttl <= 0 {
+		ttl = time.Second
+	}
+
 	err = s.tokenCache.Blacklist(ctx, request.RefreshToken, ttl)
 	if err != nil {
 		slog.ErrorContext(ctx, "Failed to blacklist token", slog.String(consts.Error, err.Error()))

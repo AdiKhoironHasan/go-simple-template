@@ -1,8 +1,9 @@
 package dto
 
 import (
-	"go-simple-template/internal/core/domain/entity"
 	"time"
+
+	"go-simple-template/internal/core/domain/entity"
 
 	validation "github.com/go-ozzo/ozzo-validation/v4"
 	"github.com/go-ozzo/ozzo-validation/v4/is"
@@ -39,14 +40,6 @@ type AuthRegisterResponse struct {
 type AuthTokenResponse struct {
 	AccessToken  string `json:"access_token"`
 	RefreshToken string `json:"refresh_token"`
-}
-
-type AuthProfileResponse struct {
-	Id        string    `json:"id"`
-	Name      string    `json:"name"`
-	Email     string    `json:"email"`
-	CreatedAt time.Time `json:"created_at"`
-	UpdatedAt time.Time `json:"updated_at"`
 }
 
 type UserProfileResponse struct {

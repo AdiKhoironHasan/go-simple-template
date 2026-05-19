@@ -36,7 +36,7 @@ func New(secretKey string) (*Service, error) {
 	// Wrap with GCM (Galois/Counter Mode)
 	aesGCM, err := cipher.NewGCM(block)
 	if err != nil {
-		return nil, fmt.Errorf("gagal membuat GCM: %w", err)
+		return nil, fmt.Errorf("failed to create GCM: %w", err)
 	}
 
 	return &Service{
@@ -47,7 +47,7 @@ func New(secretKey string) (*Service, error) {
 // Encrypt encrypts a plaintext string to a ciphertext string (Base64).
 func (s *Service) Encrypt(plaintext string) (string, error) {
 	if plaintext == "" {
-		return "", errors.New("plaintext kosong")
+		return "", errors.New("plaintext is empty")
 	}
 
 	// Create Nonce (Number used once)

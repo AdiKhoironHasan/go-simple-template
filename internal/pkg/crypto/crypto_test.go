@@ -7,6 +7,7 @@ import (
 	"time"
 
 	"github.com/stretchr/testify/assert"
+	"github.com/stretchr/testify/require"
 )
 
 func Test(t *testing.T) {
@@ -15,39 +16,38 @@ func Test(t *testing.T) {
 	privateKey, err := GenerateKeyPair()
 	assert.NoError(t, err)
 
-	privateKeyPEM := PemEncodePrivateKey(privateKey)
-	fmt.Printf("Private key:\n%s\n", privateKeyPEM)
+	_ = PemEncodePrivateKey(privateKey)
+	t.Log("Private key: [REDACTED]")
 
 	publicKey := privateKey.Public().(*rsa.PublicKey)
-	publicKeyPEM, err := PemEncodePublicKey(publicKey)
+	_, err = PemEncodePublicKey(publicKey)
 	assert.NoError(t, err)
-	fmt.Printf("Public key:\n%s\n", publicKeyPEM)
+	t.Log("Public key: [REDACTED]")
 
 	ciphertext, err := EncryptWithPublicKey(message, publicKey)
 	assert.NoError(t, err)
 
-	fmt.Printf("Ciphertext: %x\n", ciphertext)
+	t.Logf("Ciphertext: %x", ciphertext)
 	plaintext, err := DecryptWithPrivateKey(ciphertext, privateKey)
 	assert.NoError(t, err)
 
-	fmt.Printf("Plaintext: %s\n", plaintext)
+	t.Logf("Plaintext: %s", plaintext)
 
 	assert.Equal(t, message, plaintext)
 }
 
 func TestKey(t *testing.T) {
 	privateKey, err := GenerateKeyPair()
-	if err != nil {
-		panic(err)
-	}
+	require.NoError(t, err)
+
 	privateKey2, err := GenerateKeyPair()
 	assert.NoError(t, err)
 
 	privateKeyPEM := PemEncodePrivateKey(privateKey)
-	fmt.Printf("Private key:\n%s\n", privateKeyPEM)
+	t.Log("Private key: [REDACTED]")
 
 	privateKeyPEM2 := PemEncodePrivateKey(privateKey2)
-	fmt.Printf("Private key2:\n%s\n", privateKeyPEM2)
+	t.Log("Private key2: [REDACTED]")
 
 	assert.NotEqual(t, privateKeyPEM, privateKeyPEM2)
 }
@@ -55,10 +55,10 @@ func TestKey(t *testing.T) {
 func TestEncodeDecodeBase64(t *testing.T) {
 	message := fmt.Sprintf("key_%d", time.Now().Unix())
 	encoded := EncodeBASE64URL(message)
-	fmt.Printf("Encoded: %s\n", encoded)
+	t.Logf("Encoded: %s", encoded)
 	decoded, err := DecodeBASE64(encoded)
 	assert.NoError(t, err)
-	fmt.Printf("Decoded: %s\n", decoded)
+	t.Logf("Decoded: %s", decoded)
 	assert.Equal(t, message, decoded)
 }
 
@@ -68,8 +68,8 @@ func TestSHA512(t *testing.T) {
 	data := "Postman-1578568851" + "200" + "10000.00" + "VT-server-HJMpl9HLr_ntOKt5mRONdmKj"
 	signature := ComputeSHA512(data)
 
-	fmt.Println(clSignature)
-	fmt.Println(signature)
+	t.Log(clSignature)
+	t.Log(signature)
 
 	assert.Equal(t, clSignature, signature)
 }

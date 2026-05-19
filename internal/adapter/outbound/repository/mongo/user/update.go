@@ -16,7 +16,11 @@ func (db *user) Update(ctx context.Context, user entity.User) (*entity.User, err
 		response *entity.User
 	)
 
-	objectId, _ := primitive.ObjectIDFromHex(user.Id)
+	objectId, err := primitive.ObjectIDFromHex(user.Id)
+	if err != nil {
+		return nil, errs.NewNotFound("invalid user id")
+	}
+
 	f := bson.M{
 		"_id": objectId,
 	}

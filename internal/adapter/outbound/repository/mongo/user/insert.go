@@ -27,8 +27,8 @@ func (db *user) Insert(ctx context.Context, user entity.User) (*entity.User, err
 		return nil, errs.NewInternal(err, "failed to insert user")
 	}
 
-	id := result.InsertedID.(primitive.ObjectID)
-	if id.IsZero() {
+	id, ok := result.InsertedID.(primitive.ObjectID)
+	if !ok || id.IsZero() {
 		return nil, errs.NewInternal(nil, "failed to insert user")
 	}
 

@@ -4,7 +4,6 @@ import jwtgo "github.com/golang-jwt/jwt/v5"
 
 type Claims struct {
 	UserCtx
-	RevokedAt *jwtgo.NumericDate `json:"rat,omitempty"`
 	jwtgo.RegisteredClaims
 }
 

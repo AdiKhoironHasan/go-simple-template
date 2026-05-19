@@ -2,7 +2,6 @@ package auth
 
 import (
 	"context"
-	"errors"
 	"log/slog"
 
 	"go-simple-template/internal/core/domain/entity"
@@ -13,7 +12,7 @@ import (
 
 func (s *auth) Register(ctx context.Context, request entity.User) (*entity.User, error) {
 	user, err := s.userRepo.FindOne(ctx, request)
-	if err != nil && !errors.Is(err, errs.ErrUserNotFound) {
+	if err != nil && errpkg.GetCode(err) != errpkg.ErrNotFound {
 		slog.ErrorContext(ctx, "Failed to find user", slog.String("error", err.Error()))
 		return nil, err
 	}

@@ -27,7 +27,5 @@ func (m *Base) BeforeInsert() {
 }
 
 func (m *Base) BeforeUpdate() {
-	if m.UpdatedAt.IsZero() {
-		m.UpdatedAt = time.Now().UTC()
-	}
+	m.UpdatedAt = time.Now().UTC()
 }

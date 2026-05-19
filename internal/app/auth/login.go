@@ -2,7 +2,6 @@ package auth
 
 import (
 	"context"
-	"errors"
 	"log/slog"
 
 	"go-simple-template/internal/core/domain/entity"
@@ -17,7 +16,7 @@ func (s *auth) Login(ctx context.Context, request entity.User) (*entity.AuthToke
 	if err != nil {
 		slog.ErrorContext(ctx, "Failed to find user", slog.String("error", err.Error()))
 
-		if errors.Is(err, errs.ErrUserNotFound) {
+		if errpkg.GetCode(err) == errpkg.ErrNotFound {
 			return nil, errpkg.NewUnauthorized(errs.ErrMsgInvalidCredentials)
 		}
 

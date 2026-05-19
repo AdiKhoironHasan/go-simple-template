@@ -4,6 +4,7 @@ import (
 	"net/http"
 	"strings"
 
+	"go-simple-template/internal/adapter/inbound/rest/dto"
 	"go-simple-template/internal/core/domain/entity"
 	"go-simple-template/internal/pkg/jwt"
 
@@ -18,18 +19,21 @@ func MiddlewareJWT() echo.MiddlewareFunc {
 		return func(c echo.Context) error {
 			authHeader := c.Request().Header.Get("Authorization")
 			if authHeader == "" {
-				return echo.NewHTTPError(http.StatusUnauthorized, "Missing Authorization header")
+				response := dto.RestResponse(http.StatusUnauthorized, nil, nil)
+				return c.JSON(http.StatusUnauthorized, response)
 			}
 
 			parts := strings.SplitN(authHeader, " ", 2)
 			if len(parts) != 2 || parts[0] != "Bearer" {
-				return echo.NewHTTPError(http.StatusUnauthorized, "Invalid Authorization header format")
+				response := dto.RestResponse(http.StatusUnauthorized, nil, nil)
+				return c.JSON(http.StatusUnauthorized, response)
 			}
 
 			tokenString := parts[1]
 			claims, err := jwt.ValidateToken(tokenString, false)
 			if err != nil {
-				return echo.NewHTTPError(http.StatusUnauthorized, "Invalid or expired token")
+				response := dto.RestResponse(http.StatusUnauthorized, nil, nil)
+				return c.JSON(http.StatusUnauthorized, response)
 			}
 
 			// Add the user to context
