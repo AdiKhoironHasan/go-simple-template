@@ -25,7 +25,8 @@ internal/
 │           └── cache/        → Cache port interfaces
 │
 ├── app/                      → Application services (use cases)
-│   └── health/               → Health check use case
+│   ├── health/               → Health check use case
+│   └── auth/                 → User authentication (register, login, refresh, logout, profile)
 │
 ├── adapter/                  → Infrastructure adapters
 │   ├── inbound/              → Driving adapters (entry points)
@@ -67,7 +68,10 @@ internal/
 └── pkg/                      → Shared internal packages
     ├── config/               → Environment configuration
     ├── consts/               → Constants
-    └── errs/                 → Domain error system
+    ├── context/              → Context helpers (user context)
+    ├── crypto/               → Crypto utilities (bcrypt, AES-GCM, SHA, RSA)
+    ├── errs/                 → Domain error system
+    └── jwt/                  → JWT generation & validation
 ```
 
 ### Flow
@@ -116,7 +120,7 @@ make run-rest
 
 The local server starts on the port defined in `APP_PORT` (default: `8080`).
 
-### 4. Verify
+### 5. Verify
 
 ```bash
 # Basic health
@@ -134,6 +138,8 @@ curl "localhost:8080/healthz?mongodb=true&redis=true"
 | `APP_VERSION` | Application version | `1.0.0` |
 | `APP_PORT` | HTTP server port | `8080` |
 | `APP_DEBUG` | Enable debug logging | `true` |
+| `APP_SECRET_KEY` | JWT access token signing key (HMAC) | *(required)* |
+| `APP_REFRESH_KEY` | JWT refresh token signing key (HMAC) | *(required)* |
 | `MONGODB_PROTOCOL` | MongoDB protocol | `mongodb` |
 | `MONGODB_ADDRESS` | MongoDB host:port | `localhost:27017` |
 | `MONGODB_USERNAME` | MongoDB username | |
@@ -179,6 +185,10 @@ go test -v ./internal/app/health/...
 - **Domain Errors** — `internal/pkg/errs` provides protocol-agnostic error codes (`NOT_FOUND`, `CONFLICT`, etc.) translated to HTTP at the adapter layer.
 - **Concurrent Health Checks** — Uses `errgroup` for parallel MongoDB + Redis ping.
 - **Mock Generation** — Uses `go.uber.org/mock` with `//go:generate mockgen` directives on port interfaces.
+- **JWT Rotation** — Refresh token rotation with old token blacklisting on each refresh.
+- **Secure Token Storage** — SHA-256 hashed tokens in Redis keys (never stores raw JWTs).
+- **Algorithm Enforcement** — JWT validation enforces HS256 only, rejects other signing methods.
+- **Structured Logging** — JSON slog handler with automatic request ID injection.
 
 ## License
 
