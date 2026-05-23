@@ -4,9 +4,10 @@ import (
 	"context"
 
 	"go-simple-template/internal/adapter/inbound/rest/middleware"
-	"go-simple-template/internal/pkg/config"
 	"go-simple-template/internal/core/port/inbound"
+	"go-simple-template/internal/pkg/config"
 
+	authHandler "go-simple-template/internal/adapter/inbound/rest/handler/auth"
 	healthHandler "go-simple-template/internal/adapter/inbound/rest/handler/health"
 
 	"github.com/labstack/echo/v4"
@@ -16,6 +17,7 @@ import (
 // The router does NOT do DI wiring — it only registers routes.
 type Dependencies struct {
 	HealthService inbound.HealthService
+	AuthService   inbound.AuthService
 }
 
 type router struct {
@@ -39,11 +41,21 @@ func (r *router) Init(ctx context.Context) *echo.Echo {
 		middleware.MiddlewareRequestID(),
 	)
 
+	v1 := e.Group("/api/v1")
+
 	// handler
 	healthH := healthHandler.New(r.deps.HealthService)
+	authH := authHandler.New(r.deps.AuthService)
 
 	// routes
 	e.GET("/healthz", healthH.CheckHealth)
+
+	// auth routes
+	v1.POST("/auth/register", authH.Register)
+	v1.POST("/auth/login", authH.Login)
+	v1.POST("/auth/refresh", authH.RefreshToken)
+	v1.GET("/auth/profile", authH.Profile, middleware.MiddlewareJWT())
+	v1.POST("/auth/logout", authH.Logout, middleware.MiddlewareJWT())
 
 	return e
 }

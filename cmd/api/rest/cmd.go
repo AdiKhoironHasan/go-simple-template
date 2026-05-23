@@ -6,10 +6,15 @@ import (
 
 	"go-simple-template/internal/adapter/inbound/rest/router"
 	"go-simple-template/internal/adapter/inbound/rest/server"
-	healthRepo "go-simple-template/internal/adapter/outbound/repository/mongo/health"
 	healthCache "go-simple-template/internal/adapter/outbound/cache/redis/health"
+	tokenCache "go-simple-template/internal/adapter/outbound/cache/redis/token"
+	healthRepo "go-simple-template/internal/adapter/outbound/repository/mongo/health"
 	healthService "go-simple-template/internal/app/health"
 	"go-simple-template/internal/infrastructure"
+
+	userRepo "go-simple-template/internal/adapter/outbound/repository/mongo/user"
+	authService "go-simple-template/internal/app/auth"
+	"go-simple-template/internal/pkg/config"
 )
 
 func Start(ctx context.Context) {
@@ -26,13 +31,17 @@ func Start(ctx context.Context) {
 	//  Outbound Adapters (Driven)
 	healthRepo := healthRepo.New(mongo.Client)
 	healthCache := healthCache.NewCache(redis.Client)
+	tokenCache := tokenCache.NewCache(redis.Client)
+	userRepo := userRepo.New(mongo.Client, config.MongodbName())
 
 	//  Application Services
 	healthSvc := healthService.New(healthRepo, healthCache)
+	authSvc := authService.New(userRepo, tokenCache)
 
 	//  Inbound Adapters (Driving)
 	deps := &router.Dependencies{
 		HealthService: healthSvc,
+		AuthService:   authSvc,
 	}
 
 	srv := server.New(ctx, deps)

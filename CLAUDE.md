@@ -42,6 +42,7 @@ Dependencies ALWAYS flow inward. Never reference outer layers from inner layers.
 - Constructors: `errs.NewNotFound()`, `errs.NewConflict()`, `errs.NewInternal(err, msg)`, etc.
 - HTTP translation happens in `adapter/inbound/rest/utils/errmap.go` via `MapErrorToHTTP()`.
 - NEVER return HTTP status codes from `core/` or `app/` layers.
+- Use `errs.GetCode(err)` to check error types (e.g., `errs.GetCode(err) == errs.ErrNotFound`) instead of `errors.Is()` against sentinel errors, since outbound adapters now return typed `DomainError`.
 
 ### Mock Generation
 
@@ -103,5 +104,6 @@ go vet ./...          # static analysis
 | `go.uber.org/mock` | Mock generation |
 | `github.com/stretchr/testify` | Test assertions |
 | `github.com/go-ozzo/ozzo-validation/v4` | DTO validation |
-| `github.com/samber/lo` | Generic utility functions |
+| `github.com/golang-jwt/jwt/v5` | JWT generation & validation |
 | `golang.org/x/sync/errgroup` | Concurrent error handling |
+| `golang.org/x/crypto/bcrypt` | Password hashing |

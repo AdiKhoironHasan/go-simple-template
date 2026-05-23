@@ -102,3 +102,13 @@ func IsDomainError(err error) bool {
 	var de *DomainError
 	return errors.As(err, &de)
 }
+
+// Domain error messages — shared constants for auth-related errors.
+const (
+	ErrMsgEmailAlreadyExists = "email already exists"
+	ErrMsgUserNotFound       = "user not found"
+	ErrMsgInvalidCredentials = "invalid email or password"
+	ErrMsgInvalidToken       = "invalid or expired token"
+	ErrMsgTokenMissing       = "token is missing"
+	ErrMsgUnauthorized       = "unauthorized access"
+)
