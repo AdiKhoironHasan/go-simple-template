@@ -26,9 +26,7 @@ func (db *user) FindOne(ctx context.Context, user entity.User) (*entity.User, er
 			return nil, errpkg.NewNotFound("invalid user id")
 		}
 		f = bson.M{"_id": objectId}
-	}
-
-	if user.Email != "" {
+	} else if user.Email != "" {
 		f = bson.M{"email": user.Email}
 	}
 

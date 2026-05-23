@@ -6,22 +6,21 @@ import (
 	"time"
 
 	"go-simple-template/internal/core/domain/entity"
-	"go-simple-template/internal/core/domain/errs"
 	"go-simple-template/internal/pkg/consts"
 	errpkg "go-simple-template/internal/pkg/errs"
 	"go-simple-template/internal/pkg/jwt"
 )
 
 func (s *auth) Logout(ctx context.Context, request entity.AuthToken) error {
-	claims, err := jwt.ValidateToken(request.RefreshToken, true)
+	claims, err := jwt.ValidateToken(ctx, request.RefreshToken, true)
 	if err != nil {
 		slog.ErrorContext(ctx, "Invalid refresh token", slog.String(consts.Error, err.Error()))
-		return errpkg.NewUnauthorized(errs.ErrMsgInvalidToken)
+		return errpkg.NewUnauthorized(errpkg.ErrMsgInvalidToken)
 	}
 
 	if claims.ExpiresAt == nil {
 		slog.ErrorContext(ctx, "Refresh token missing expiration")
-		return errpkg.NewUnauthorized(errs.ErrMsgInvalidToken)
+		return errpkg.NewUnauthorized(errpkg.ErrMsgInvalidToken)
 	}
 
 	ttl := time.Until(claims.ExpiresAt.Time)

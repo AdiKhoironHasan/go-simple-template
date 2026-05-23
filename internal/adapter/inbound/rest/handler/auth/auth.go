@@ -13,5 +13,3 @@ func New(authService inbound.AuthService) *AuthHandler {
 		authService: authService,
 	}
 }
-
-

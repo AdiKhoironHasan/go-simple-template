@@ -6,7 +6,6 @@ import (
 	"time"
 
 	"go-simple-template/internal/core/domain/entity"
-	"go-simple-template/internal/core/domain/errs"
 	"go-simple-template/internal/pkg/consts"
 	errpkg "go-simple-template/internal/pkg/errs"
 	"go-simple-template/internal/pkg/jwt"
@@ -21,13 +20,13 @@ func (s *auth) RefreshToken(ctx context.Context, request entity.AuthToken) (*ent
 
 	if isBlacklisted {
 		slog.ErrorContext(ctx, "Refresh token is blacklisted")
-		return nil, errpkg.NewUnauthorized(errs.ErrMsgInvalidToken)
+		return nil, errpkg.NewUnauthorized(errpkg.ErrMsgInvalidToken)
 	}
 
-	refreshToken, err := jwt.ValidateToken(request.RefreshToken, true)
+	refreshToken, err := jwt.ValidateToken(ctx, request.RefreshToken, true)
 	if err != nil {
 		slog.ErrorContext(ctx, "Invalid refresh token", slog.String("error", err.Error()))
-		return nil, errpkg.NewUnauthorized(errs.ErrMsgInvalidToken)
+		return nil, errpkg.NewUnauthorized(errpkg.ErrMsgInvalidToken)
 	}
 
 	if refreshToken.ExpiresAt != nil {

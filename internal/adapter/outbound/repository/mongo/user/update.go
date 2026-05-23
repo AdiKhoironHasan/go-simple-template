@@ -34,10 +34,10 @@ func (db *user) Update(ctx context.Context, user entity.User) (*entity.User, err
 
 	result, err := db.collection.UpdateOne(ctx, f, update)
 	if err != nil {
-		return nil, err
+		return nil, errs.NewInternal(err, "failed to update user")
 	}
 
-	if result.MatchedCount == 0 || result.ModifiedCount == 0 {
+	if result.MatchedCount == 0 {
 		return nil, errs.NewNotFound("user not found")
 	}
 

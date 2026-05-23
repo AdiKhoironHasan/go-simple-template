@@ -1,12 +1,13 @@
 package jwt
 
 import (
+	"context"
 	"errors"
-	"log"
+	"log/slog"
 	"time"
 
-	"go-simple-template/internal/core/domain/errs"
 	"go-simple-template/internal/pkg/config"
+	errpkg "go-simple-template/internal/pkg/errs"
 
 	jwtgo "github.com/golang-jwt/jwt/v5"
 )
@@ -40,7 +41,7 @@ func GenerateToken(payload UserCtx, isRefresh bool) (string, error) {
 	return token.SignedString(key)
 }
 
-func ValidateToken(tokenString string, isRefreshToken bool) (*Claims, error) {
+func ValidateToken(ctx context.Context, tokenString string, isRefreshToken bool) (*Claims, error) {
 	var (
 		claims = &Claims{}
 		key    = config.AppSecretKey()
@@ -60,13 +61,13 @@ func ValidateToken(tokenString string, isRefreshToken bool) (*Claims, error) {
 		return []byte(key), nil
 	})
 	if err != nil {
-		log.Println("jwt err: ", err)
-		return nil, errs.ErrInvalidToken
+		slog.WarnContext(ctx, "JWT validation failed", slog.String("error", err.Error()))
+		return nil, errpkg.NewUnauthorized(errpkg.ErrMsgInvalidToken)
 	}
 
 	if !token.Valid {
-		log.Println("jwt err: ", errs.ErrInvalidToken)
-		return nil, errs.ErrInvalidToken
+		slog.WarnContext(ctx, "JWT token is invalid")
+		return nil, errpkg.NewUnauthorized(errpkg.ErrMsgInvalidToken)
 	}
 
 	return claims, nil

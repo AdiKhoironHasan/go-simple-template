@@ -5,7 +5,6 @@ import (
 	"log/slog"
 
 	"go-simple-template/internal/core/domain/entity"
-	"go-simple-template/internal/core/domain/errs"
 	"go-simple-template/internal/pkg/crypto"
 	errpkg "go-simple-template/internal/pkg/errs"
 )
@@ -21,7 +20,7 @@ func (s *auth) Register(ctx context.Context, request entity.User) (*entity.User,
 	if user != nil {
 		slog.ErrorContext(ctx, "User already exists", slog.String("email", request.Email))
 
-		return nil, errpkg.NewConflict(errs.ErrMsgEmailAlreadyExists)
+		return nil, errpkg.NewConflict(errpkg.ErrMsgEmailAlreadyExists)
 	}
 
 	// create hash for password

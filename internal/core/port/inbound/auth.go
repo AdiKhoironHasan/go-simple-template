@@ -6,6 +6,7 @@ import (
 	"go-simple-template/internal/core/domain/entity"
 )
 
+//go:generate mockgen -package mocks -source=auth.go -destination=mocks/auth_mock.go AuthService
 type AuthService interface {
 	Register(ctx context.Context, request entity.User) (*entity.User, error)
 	Login(ctx context.Context, request entity.User) (*entity.AuthToken, error)

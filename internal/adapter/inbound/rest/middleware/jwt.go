@@ -30,7 +30,7 @@ func MiddlewareJWT() echo.MiddlewareFunc {
 			}
 
 			tokenString := parts[1]
-			claims, err := jwt.ValidateToken(tokenString, false)
+			claims, err := jwt.ValidateToken(c.Request().Context(), tokenString, false)
 			if err != nil {
 				response := dto.RestResponse(http.StatusUnauthorized, nil, nil)
 				return c.JSON(http.StatusUnauthorized, response)

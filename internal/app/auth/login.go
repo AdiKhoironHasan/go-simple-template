@@ -5,7 +5,6 @@ import (
 	"log/slog"
 
 	"go-simple-template/internal/core/domain/entity"
-	"go-simple-template/internal/core/domain/errs"
 	"go-simple-template/internal/pkg/crypto"
 	errpkg "go-simple-template/internal/pkg/errs"
 	"go-simple-template/internal/pkg/jwt"
@@ -17,7 +16,7 @@ func (s *auth) Login(ctx context.Context, request entity.User) (*entity.AuthToke
 		slog.ErrorContext(ctx, "Failed to find user", slog.String("error", err.Error()))
 
 		if errpkg.GetCode(err) == errpkg.ErrNotFound {
-			return nil, errpkg.NewUnauthorized(errs.ErrMsgInvalidCredentials)
+			return nil, errpkg.NewUnauthorized(errpkg.ErrMsgInvalidCredentials)
 		}
 
 		return nil, err
@@ -26,7 +25,7 @@ func (s *auth) Login(ctx context.Context, request entity.User) (*entity.AuthToke
 	// check if password is correct
 	if !crypto.CheckPasswordHash(request.Password, user.Password) {
 		slog.ErrorContext(ctx, "Incorrect password", slog.String("user_id", user.Id))
-		return nil, errpkg.NewUnauthorized(errs.ErrMsgInvalidCredentials)
+		return nil, errpkg.NewUnauthorized(errpkg.ErrMsgInvalidCredentials)
 	}
 
 	jwtPayload := jwt.UserCtx{
