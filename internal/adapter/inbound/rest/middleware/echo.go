@@ -4,7 +4,7 @@ import (
 	"context"
 	"log/slog"
 
-	"go-simple-template/internal/pkg/consts"
+	"github.com/adikhoironhasan/go-simple-template/internal/pkg/consts"
 
 	"github.com/labstack/echo/v4"
 	"github.com/labstack/echo/v4/middleware"

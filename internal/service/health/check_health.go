@@ -6,8 +6,8 @@ import (
 	"log/slog"
 	"sync"
 
-	"go-simple-template/internal/core/domain/entity"
-	"go-simple-template/internal/pkg/consts"
+	"github.com/adikhoironhasan/go-simple-template/internal/core/domain/entity"
+	"github.com/adikhoironhasan/go-simple-template/internal/pkg/consts"
 
 	"golang.org/x/sync/errgroup"
 )

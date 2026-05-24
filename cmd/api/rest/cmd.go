@@ -7,16 +7,16 @@ import (
 	"os/signal"
 	"syscall"
 
-	"go-simple-template/internal/adapter/inbound/rest/router"
-	"go-simple-template/internal/adapter/inbound/rest/server"
-	healthCache "go-simple-template/internal/adapter/outbound/cache/redis/health"
-	tokenCacheAdapter "go-simple-template/internal/adapter/outbound/cache/redis/token"
-	healthRepo "go-simple-template/internal/adapter/outbound/repository/mongo/health"
-	userRepo "go-simple-template/internal/adapter/outbound/repository/mongo/user"
-	"go-simple-template/internal/infrastructure"
-	"go-simple-template/internal/pkg/config"
-	authService "go-simple-template/internal/service/auth"
-	healthService "go-simple-template/internal/service/health"
+	"github.com/adikhoironhasan/go-simple-template/internal/adapter/inbound/rest/router"
+	"github.com/adikhoironhasan/go-simple-template/internal/adapter/inbound/rest/server"
+	healthCache "github.com/adikhoironhasan/go-simple-template/internal/adapter/outbound/cache/redis/health"
+	tokenCacheAdapter "github.com/adikhoironhasan/go-simple-template/internal/adapter/outbound/cache/redis/token"
+	healthRepo "github.com/adikhoironhasan/go-simple-template/internal/adapter/outbound/repository/mongo/health"
+	userRepo "github.com/adikhoironhasan/go-simple-template/internal/adapter/outbound/repository/mongo/user"
+	"github.com/adikhoironhasan/go-simple-template/internal/infrastructure"
+	"github.com/adikhoironhasan/go-simple-template/internal/pkg/config"
+	authService "github.com/adikhoironhasan/go-simple-template/internal/service/auth"
+	healthService "github.com/adikhoironhasan/go-simple-template/internal/service/health"
 )
 
 func Start(ctx context.Context) {

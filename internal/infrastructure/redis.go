@@ -6,8 +6,8 @@ import (
 	"fmt"
 	"log/slog"
 
-	"go-simple-template/internal/pkg/config"
-	"go-simple-template/internal/pkg/consts"
+	"github.com/adikhoironhasan/go-simple-template/internal/pkg/config"
+	"github.com/adikhoironhasan/go-simple-template/internal/pkg/consts"
 
 	red "github.com/redis/go-redis/v9"
 )

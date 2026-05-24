@@ -3,7 +3,7 @@ package inbound
 import (
 	"context"
 
-	"go-simple-template/internal/core/domain/entity"
+	"github.com/adikhoironhasan/go-simple-template/internal/core/domain/entity"
 )
 
 //go:generate mockgen -package mocks -source=auth.go -destination=mocks/auth_mock.go AuthService

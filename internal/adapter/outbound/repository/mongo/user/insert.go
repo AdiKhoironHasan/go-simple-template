@@ -3,9 +3,9 @@ package user
 import (
 	"context"
 
-	"go-simple-template/internal/adapter/outbound/repository/mongo/model"
-	"go-simple-template/internal/core/domain/entity"
-	"go-simple-template/internal/pkg/errs"
+	"github.com/adikhoironhasan/go-simple-template/internal/adapter/outbound/repository/mongo/model"
+	"github.com/adikhoironhasan/go-simple-template/internal/core/domain/entity"
+	"github.com/adikhoironhasan/go-simple-template/internal/pkg/errs"
 
 	"go.mongodb.org/mongo-driver/bson/primitive"
 	"go.mongodb.org/mongo-driver/mongo"

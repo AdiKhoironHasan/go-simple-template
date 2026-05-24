@@ -11,9 +11,9 @@ package mocks
 
 import (
 	context "context"
-	entity "go-simple-template/internal/core/domain/entity"
 	reflect "reflect"
 
+	entity "github.com/adikhoironhasan/go-simple-template/internal/core/domain/entity"
 	gomock "go.uber.org/mock/gomock"
 )
 

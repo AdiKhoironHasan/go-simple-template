@@ -4,10 +4,10 @@ import (
 	"context"
 	"errors"
 
-	"go-simple-template/internal/adapter/outbound/repository/mongo/model"
-	"go-simple-template/internal/core/domain/entity"
+	"github.com/adikhoironhasan/go-simple-template/internal/adapter/outbound/repository/mongo/model"
+	"github.com/adikhoironhasan/go-simple-template/internal/core/domain/entity"
 
-	errpkg "go-simple-template/internal/pkg/errs"
+	errpkg "github.com/adikhoironhasan/go-simple-template/internal/pkg/errs"
 
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/bson/primitive"

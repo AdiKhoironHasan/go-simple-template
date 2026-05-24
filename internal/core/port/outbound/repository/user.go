@@ -3,7 +3,7 @@ package repository
 import (
 	"context"
 
-	"go-simple-template/internal/core/domain/entity"
+	"github.com/adikhoironhasan/go-simple-template/internal/core/domain/entity"
 )
 
 //go:generate mockgen -package mocks -source=user.go -destination=mocks/user_mock.go UserRepository

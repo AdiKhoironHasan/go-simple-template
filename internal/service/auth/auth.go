@@ -1,8 +1,8 @@
 package auth
 
 import (
-	"go-simple-template/internal/core/port/outbound/cache"
-	"go-simple-template/internal/core/port/outbound/repository"
+	"github.com/adikhoironhasan/go-simple-template/internal/core/port/outbound/cache"
+	"github.com/adikhoironhasan/go-simple-template/internal/core/port/outbound/repository"
 )
 
 type auth struct {

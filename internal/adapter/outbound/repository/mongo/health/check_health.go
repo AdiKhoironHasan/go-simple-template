@@ -2,7 +2,7 @@ package health
 
 import (
 	"context"
-	"go-simple-template/internal/pkg/consts"
+	"github.com/adikhoironhasan/go-simple-template/internal/pkg/consts"
 	"log/slog"
 )
 

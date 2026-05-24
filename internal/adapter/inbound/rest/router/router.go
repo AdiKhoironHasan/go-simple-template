@@ -3,12 +3,12 @@ package router
 import (
 	"context"
 
-	"go-simple-template/internal/adapter/inbound/rest/middleware"
-	"go-simple-template/internal/core/port/inbound"
-	"go-simple-template/internal/pkg/config"
+	"github.com/adikhoironhasan/go-simple-template/internal/adapter/inbound/rest/middleware"
+	"github.com/adikhoironhasan/go-simple-template/internal/core/port/inbound"
+	"github.com/adikhoironhasan/go-simple-template/internal/pkg/config"
 
-	authHandler "go-simple-template/internal/adapter/inbound/rest/handler/auth"
-	healthHandler "go-simple-template/internal/adapter/inbound/rest/handler/health"
+	authHandler "github.com/adikhoironhasan/go-simple-template/internal/adapter/inbound/rest/handler/auth"
+	healthHandler "github.com/adikhoironhasan/go-simple-template/internal/adapter/inbound/rest/handler/health"
 
 	"github.com/labstack/echo/v4"
 )

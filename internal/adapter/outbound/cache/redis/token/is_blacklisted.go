@@ -6,7 +6,7 @@ import (
 	"encoding/hex"
 	"log/slog"
 
-	"go-simple-template/internal/pkg/consts"
+	"github.com/adikhoironhasan/go-simple-template/internal/pkg/consts"
 )
 
 func (c *cacheRepo) IsBlacklisted(ctx context.Context, token string) (bool, error) {

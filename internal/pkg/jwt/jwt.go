@@ -6,9 +6,9 @@ import (
 	"log/slog"
 	"time"
 
-	"go-simple-template/internal/core/domain/entity"
-	"go-simple-template/internal/pkg/config"
-	errpkg "go-simple-template/internal/pkg/errs"
+	"github.com/adikhoironhasan/go-simple-template/internal/core/domain/entity"
+	"github.com/adikhoironhasan/go-simple-template/internal/pkg/config"
+	errpkg "github.com/adikhoironhasan/go-simple-template/internal/pkg/errs"
 
 	jwtgo "github.com/golang-jwt/jwt/v5"
 )

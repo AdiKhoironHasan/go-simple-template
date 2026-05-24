@@ -4,10 +4,10 @@ import (
 	"context"
 	"log/slog"
 
-	"go-simple-template/internal/core/domain/entity"
-	"go-simple-template/internal/pkg/crypto"
-	errpkg "go-simple-template/internal/pkg/errs"
-	"go-simple-template/internal/pkg/jwt"
+	"github.com/adikhoironhasan/go-simple-template/internal/core/domain/entity"
+	"github.com/adikhoironhasan/go-simple-template/internal/pkg/crypto"
+	errpkg "github.com/adikhoironhasan/go-simple-template/internal/pkg/errs"
+	"github.com/adikhoironhasan/go-simple-template/internal/pkg/jwt"
 )
 
 func (s *auth) Login(ctx context.Context, request entity.User) (*entity.AuthToken, error) {

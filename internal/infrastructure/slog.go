@@ -5,7 +5,7 @@ import (
 	"log/slog"
 	"os"
 
-	"go-simple-template/internal/pkg/consts"
+	"github.com/adikhoironhasan/go-simple-template/internal/pkg/consts"
 )
 
 // NewSlog initializes the slog logger with the specified log level.

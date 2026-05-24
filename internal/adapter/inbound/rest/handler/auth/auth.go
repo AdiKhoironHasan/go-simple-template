@@ -1,7 +1,7 @@
 package auth
 
 import (
-	"go-simple-template/internal/core/port/inbound"
+	"github.com/adikhoironhasan/go-simple-template/internal/core/port/inbound"
 )
 
 type AuthHandler struct {

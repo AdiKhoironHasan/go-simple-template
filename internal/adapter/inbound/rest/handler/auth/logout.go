@@ -4,9 +4,9 @@ import (
 	"log/slog"
 	"net/http"
 
-	"go-simple-template/internal/adapter/inbound/rest/dto"
-	"go-simple-template/internal/adapter/inbound/rest/utils"
-	"go-simple-template/internal/pkg/consts"
+	"github.com/adikhoironhasan/go-simple-template/internal/adapter/inbound/rest/dto"
+	"github.com/adikhoironhasan/go-simple-template/internal/adapter/inbound/rest/utils"
+	"github.com/adikhoironhasan/go-simple-template/internal/pkg/consts"
 
 	"github.com/labstack/echo/v4"
 )

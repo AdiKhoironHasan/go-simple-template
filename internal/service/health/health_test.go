@@ -3,8 +3,8 @@ package health
 import (
 	"testing"
 
-	cacheMocks "go-simple-template/internal/core/port/outbound/cache/mocks"
-	repoMocks "go-simple-template/internal/core/port/outbound/repository/mocks"
+	cacheMocks "github.com/adikhoironhasan/go-simple-template/internal/core/port/outbound/cache/mocks"
+	repoMocks "github.com/adikhoironhasan/go-simple-template/internal/core/port/outbound/repository/mocks"
 
 	"go.uber.org/mock/gomock"
 )

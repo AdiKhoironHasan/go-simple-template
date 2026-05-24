@@ -5,7 +5,7 @@ import (
 	"errors"
 	"testing"
 
-	"go-simple-template/internal/core/domain/entity"
+	"github.com/adikhoironhasan/go-simple-template/internal/core/domain/entity"
 
 	"github.com/samber/lo"
 	"github.com/stretchr/testify/assert"

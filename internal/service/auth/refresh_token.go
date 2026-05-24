@@ -5,10 +5,10 @@ import (
 	"log/slog"
 	"time"
 
-	"go-simple-template/internal/core/domain/entity"
-	"go-simple-template/internal/pkg/consts"
-	errpkg "go-simple-template/internal/pkg/errs"
-	"go-simple-template/internal/pkg/jwt"
+	"github.com/adikhoironhasan/go-simple-template/internal/core/domain/entity"
+	"github.com/adikhoironhasan/go-simple-template/internal/pkg/consts"
+	errpkg "github.com/adikhoironhasan/go-simple-template/internal/pkg/errs"
+	"github.com/adikhoironhasan/go-simple-template/internal/pkg/jwt"
 )
 
 func (s *auth) RefreshToken(ctx context.Context, request entity.AuthToken) (*entity.AuthToken, error) {

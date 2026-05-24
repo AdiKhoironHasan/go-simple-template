@@ -3,7 +3,7 @@ package utils
 import (
 	"net/http"
 
-	"go-simple-template/internal/pkg/errs"
+	"github.com/adikhoironhasan/go-simple-template/internal/pkg/errs"
 )
 
 // codeToHTTP maps domain error codes to HTTP status codes.

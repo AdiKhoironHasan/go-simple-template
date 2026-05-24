@@ -2,8 +2,8 @@ package context
 
 import (
 	"context"
-	"go-simple-template/internal/core/domain/entity"
-	"go-simple-template/internal/pkg/consts"
+	"github.com/adikhoironhasan/go-simple-template/internal/core/domain/entity"
+	"github.com/adikhoironhasan/go-simple-template/internal/pkg/consts"
 )
 
 func SetUserCtx(ctx context.Context, userCtx *entity.UserCtx) context.Context {

@@ -3,10 +3,10 @@ package auth
 import (
 	"testing"
 
-	"go-simple-template/internal/core/domain/entity"
-	cacheMocks "go-simple-template/internal/core/port/outbound/cache/mocks"
-	repoMocks "go-simple-template/internal/core/port/outbound/repository/mocks"
-	"go-simple-template/internal/pkg/jwt"
+	"github.com/adikhoironhasan/go-simple-template/internal/core/domain/entity"
+	cacheMocks "github.com/adikhoironhasan/go-simple-template/internal/core/port/outbound/cache/mocks"
+	repoMocks "github.com/adikhoironhasan/go-simple-template/internal/core/port/outbound/repository/mocks"
+	"github.com/adikhoironhasan/go-simple-template/internal/pkg/jwt"
 
 	"github.com/spf13/viper"
 	"github.com/stretchr/testify/require"

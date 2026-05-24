@@ -4,8 +4,8 @@ import (
 	"context"
 	"testing"
 
-	"go-simple-template/internal/core/domain/entity"
-	"go-simple-template/internal/pkg/errs"
+	"github.com/adikhoironhasan/go-simple-template/internal/core/domain/entity"
+	"github.com/adikhoironhasan/go-simple-template/internal/pkg/errs"
 
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"

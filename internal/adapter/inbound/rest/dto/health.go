@@ -1,6 +1,6 @@
 package dto
 
-import "go-simple-template/internal/core/domain/entity"
+import "github.com/adikhoironhasan/go-simple-template/internal/core/domain/entity"
 
 type CheckHealthRequest struct {
 	MongoDB bool `query:"mongodb"`
