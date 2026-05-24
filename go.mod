@@ -1,4 +1,4 @@
-module go-simple-template
+module github.com/adikhoironhasan/go-simple-template
 
 go 1.26.2
 

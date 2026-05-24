@@ -5,9 +5,9 @@ import (
 	"log"
 	"log/slog"
 
-	"go-simple-template/cmd/api/rest"
-	"go-simple-template/internal/infrastructure"
-	"go-simple-template/internal/pkg/config"
+	"github.com/adikhoironhasan/go-simple-template/cmd/api/rest"
+	"github.com/adikhoironhasan/go-simple-template/internal/infrastructure"
+	"github.com/adikhoironhasan/go-simple-template/internal/pkg/config"
 
 	"github.com/spf13/cobra"
 )

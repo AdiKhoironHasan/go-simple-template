@@ -24,7 +24,7 @@ internal/
 │           ├── repository/   → Database port interfaces
 │           └── cache/        → Cache port interfaces
 │
-├── app/                      → Application services (use cases)
+├── service/                      → Application services (use cases)
 │   ├── health/               → Health check use case
 │   └── auth/                 → User authentication (register, login, refresh, logout, profile)
 │
@@ -175,7 +175,7 @@ go test ./...
 go test -v ./...
 
 # Run specific package
-go test -v ./internal/app/health/...
+go test -v ./internal/service/health/...
 ```
 
 ## Key Design Decisions

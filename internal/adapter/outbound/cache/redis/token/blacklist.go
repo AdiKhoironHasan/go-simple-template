@@ -5,7 +5,7 @@ import (
 	"log/slog"
 	"time"
 
-	"go-simple-template/internal/pkg/consts"
+	"github.com/adikhoironhasan/go-simple-template/internal/pkg/consts"
 )
 
 func (c *cacheRepo) Blacklist(ctx context.Context, token string, expiration time.Duration) error {

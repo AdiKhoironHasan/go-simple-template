@@ -4,10 +4,10 @@ import (
 	"net/http"
 	"strings"
 
-	"go-simple-template/internal/adapter/inbound/rest/dto"
-	"go-simple-template/internal/pkg/jwt"
+	"github.com/adikhoironhasan/go-simple-template/internal/adapter/inbound/rest/dto"
+	"github.com/adikhoironhasan/go-simple-template/internal/pkg/jwt"
 
-	ctxpkg "go-simple-template/internal/pkg/context"
+	ctxpkg "github.com/adikhoironhasan/go-simple-template/internal/pkg/context"
 
 	"github.com/labstack/echo/v4"
 )

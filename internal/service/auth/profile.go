@@ -4,8 +4,8 @@ import (
 	"context"
 	"log/slog"
 
-	"go-simple-template/internal/core/domain/entity"
-	errpkg "go-simple-template/internal/pkg/errs"
+	"github.com/adikhoironhasan/go-simple-template/internal/core/domain/entity"
+	errpkg "github.com/adikhoironhasan/go-simple-template/internal/pkg/errs"
 )
 
 func (s *auth) Profile(ctx context.Context, request entity.AuthToken) (*entity.User, error) {

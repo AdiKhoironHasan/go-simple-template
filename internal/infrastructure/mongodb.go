@@ -5,8 +5,8 @@ import (
 	"fmt"
 	"log/slog"
 
-	"go-simple-template/internal/pkg/config"
-	"go-simple-template/internal/pkg/consts"
+	"github.com/adikhoironhasan/go-simple-template/internal/pkg/config"
+	"github.com/adikhoironhasan/go-simple-template/internal/pkg/consts"
 
 	"go.mongodb.org/mongo-driver/mongo"
 	"go.mongodb.org/mongo-driver/mongo/options"

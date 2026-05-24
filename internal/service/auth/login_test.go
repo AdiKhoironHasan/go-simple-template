@@ -2,9 +2,9 @@ package auth
 
 import (
 	"context"
-	"go-simple-template/internal/core/domain/entity"
-	"go-simple-template/internal/pkg/crypto"
-	"go-simple-template/internal/pkg/errs"
+	"github.com/adikhoironhasan/go-simple-template/internal/core/domain/entity"
+	"github.com/adikhoironhasan/go-simple-template/internal/pkg/crypto"
+	"github.com/adikhoironhasan/go-simple-template/internal/pkg/errs"
 	"testing"
 
 	"github.com/stretchr/testify/assert"

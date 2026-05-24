@@ -4,9 +4,9 @@ import (
 	"context"
 	"log/slog"
 
-	"go-simple-template/internal/core/domain/entity"
-	"go-simple-template/internal/pkg/crypto"
-	errpkg "go-simple-template/internal/pkg/errs"
+	"github.com/adikhoironhasan/go-simple-template/internal/core/domain/entity"
+	"github.com/adikhoironhasan/go-simple-template/internal/pkg/crypto"
+	errpkg "github.com/adikhoironhasan/go-simple-template/internal/pkg/errs"
 )
 
 func (s *auth) Register(ctx context.Context, request entity.User) (*entity.User, error) {

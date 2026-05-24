@@ -1,6 +1,6 @@
 package health
 
-import "go-simple-template/internal/core/port/inbound"
+import "github.com/adikhoironhasan/go-simple-template/internal/core/port/inbound"
 
 type handler struct {
 	healthService inbound.HealthService

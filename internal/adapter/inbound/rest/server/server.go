@@ -7,8 +7,8 @@ import (
 	"net/http"
 	"time"
 
-	"go-simple-template/internal/adapter/inbound/rest/router"
-	"go-simple-template/internal/pkg/config"
+	"github.com/adikhoironhasan/go-simple-template/internal/adapter/inbound/rest/router"
+	"github.com/adikhoironhasan/go-simple-template/internal/pkg/config"
 )
 
 type server struct {

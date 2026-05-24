@@ -1,7 +1,7 @@
 package user
 
 import (
-	"go-simple-template/internal/adapter/outbound/repository/mongo/model"
+	"github.com/adikhoironhasan/go-simple-template/internal/adapter/outbound/repository/mongo/model"
 	"go.mongodb.org/mongo-driver/mongo"
 )
 

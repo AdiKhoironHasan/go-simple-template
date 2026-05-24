@@ -1,7 +1,7 @@
 package model
 
 import (
-	"go-simple-template/internal/core/domain/entity"
+	"github.com/adikhoironhasan/go-simple-template/internal/core/domain/entity"
 
 	"go.mongodb.org/mongo-driver/bson/primitive"
 )

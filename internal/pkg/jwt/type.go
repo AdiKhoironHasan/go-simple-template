@@ -1,7 +1,7 @@
 package jwt
 
 import (
-	"go-simple-template/internal/core/domain/entity"
+	"github.com/adikhoironhasan/go-simple-template/internal/core/domain/entity"
 
 	jwtgo "github.com/golang-jwt/jwt/v5"
 )

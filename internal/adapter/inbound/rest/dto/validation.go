@@ -9,7 +9,7 @@ import (
 	"path/filepath"
 	"strings"
 
-	"go-simple-template/internal/pkg/consts"
+	"github.com/adikhoironhasan/go-simple-template/internal/pkg/consts"
 
 	validation "github.com/go-ozzo/ozzo-validation/v4"
 )
