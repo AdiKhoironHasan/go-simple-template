@@ -3,19 +3,22 @@ package health
 import (
 	"context"
 	"fmt"
+	"log/slog"
+	"sync"
+
 	"go-simple-template/internal/core/domain/entity"
 	"go-simple-template/internal/pkg/consts"
-	"log/slog"
 
 	"golang.org/x/sync/errgroup"
 )
 
 func (s *service) CheckHealth(ctx context.Context, req entity.CheckHealth) (*entity.CheckHealth, error) {
-	const (
-		funcName = "CheckHealth"
-	)
+	const funcName = "CheckHealth"
 
-	response := entity.CheckHealth{}
+	var (
+		mu       sync.Mutex
+		response entity.CheckHealth
+	)
 
 	eg, egCtx := errgroup.WithContext(ctx)
 
@@ -27,7 +30,9 @@ func (s *service) CheckHealth(ctx context.Context, req entity.CheckHealth) (*ent
 				return err
 			}
 
+			mu.Lock()
 			response.MongoDB = true
+			mu.Unlock()
 			return nil
 		})
 	}
@@ -40,7 +45,9 @@ func (s *service) CheckHealth(ctx context.Context, req entity.CheckHealth) (*ent
 				return err
 			}
 
+			mu.Lock()
 			response.Redis = true
+			mu.Unlock()
 			return nil
 		})
 	}

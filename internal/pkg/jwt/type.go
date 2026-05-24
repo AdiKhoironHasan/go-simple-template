@@ -1,15 +1,14 @@
 package jwt
 
-import jwtgo "github.com/golang-jwt/jwt/v5"
+import (
+	"go-simple-template/internal/core/domain/entity"
+
+	jwtgo "github.com/golang-jwt/jwt/v5"
+)
 
 type Claims struct {
-	UserCtx
+	UserCtx entity.UserCtx
 	jwtgo.RegisteredClaims
-}
-
-type UserCtx struct {
-	Id    string `json:"id"`
-	Email string `json:"email"`
 }
 
 // GetExpirationTime implements the Claims interface.

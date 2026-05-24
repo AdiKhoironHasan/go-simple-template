@@ -10,29 +10,75 @@ Go service boilerplate using **Hexagonal Architecture** (Ports and Adapters) wit
 
 ### Layer Boundaries (STRICT)
 
-1. **`internal/core/`** — Pure domain. MUST NOT import from `adapter/`, `app/`, `infrastructure/`, or any external framework.
-2. **`internal/app/`** — Application services. Depends ONLY on `core/` ports and entities.
-3. **`internal/adapter/`** — Implements ports. Can import `core/`, `pkg/`, and external libraries.
+1. **`internal/core/`** — Pure domain (entities, ports, domain services). MUST NOT import from any other layer or external framework.
+2. **`internal/service/`** — Application services (use cases). Depends on `core/` ports and entities, plus `pkg/` utilities. MUST NOT import from `adapter/` or `infrastructure/`.
+3. **`internal/adapter/`** — Implements ports (inbound/outbound). Can import `core/`, `service/`, `pkg/`, and external libraries.
 4. **`internal/infrastructure/`** — Technical setup (DB clients, logger). No business logic.
 5. **`cmd/`** — Composition Root. Wires everything together. The ONLY place for dependency injection.
 
 ### Dependency Direction
 
 ```
-cmd/ → adapter/ → app/ → core/
-         ↓
-    infrastructure/
+cmd/ ──→ adapter/ ──→ service/ ──→ core/
+  │         │            │
+  └─────────┴────────────┴──→ infrastructure/  pkg/
 ```
 
 Dependencies ALWAYS flow inward. Never reference outer layers from inner layers.
+
+- `cmd/` imports `adapter/`, `infrastructure/`, `service/`, and `pkg/` (composition root).
+- `adapter/` imports `service/` (inbound handlers) or implements ports directly. Can import `pkg/`.
+- `service/` imports `core/port/`, `core/domain/entity/`, and `pkg/`.
+- `core/` imports nothing outside itself.
+
+### pkg/ Usage Rules
+
+`internal/pkg/` is for shared internal utilities — pure functions, no I/O, no side effects. These are stateless helpers that happen to live outside the domain but don't require port/interface abstraction.
+
+- **`pkg/errs`**, `pkg/consts` — allowed everywhere.
+- **`pkg/jwt`** (token generation, validation) — pure in-memory crypto operations. Allowed in `service/` and `adapter/`. No I/O, no external dependency beyond `golang-jwt/jwt`.
+- **`pkg/crypto`** (password hashing, bcrypt) — pure in-memory crypto operations. Allowed in `service/` and `adapter/`.
+- **`pkg/config`** — environment variable loader. Allowed everywhere.
+- **`pkg/context`** — request context helpers. Allowed everywhere.
+
+**Rule of thumb:** If a pkg utility involves I/O (network call, filesystem, external system), it belongs in `adapter/outbound/` via a port. If it's purely in-memory computation, it stays in `pkg/`.
+
+> **Design decision:** JWT and bcrypt are kept in `pkg/` — not extracted to outbound ports. Rationale: these are stateless, in-memory utilities that don't involve external I/O. Abstracting them behind ports adds indirection without solving a real problem. See `.claude/my.md` for the full argument.
+
+### Linter Enforcement (Recommended)
+
+Use `depguard` in `.golangci.yml` to enforce layer boundaries:
+
+```yaml
+version: "2"
+linters:
+  settings:
+    depguard:
+      rules:
+        service-layer:
+          files:
+            - $all
+            - "!**/cmd/**"
+            - "!**/adapter/**"
+            - "!**/infrastructure/**"
+            - "!**/pkg/**"
+            - "!**/mocks/**"
+          deny:
+            - pkg: "go-simple-template/internal/adapter"
+              desc: "service and core layers must not import adapter"
+            - pkg: "go-simple-template/internal/infrastructure"
+              desc: "service and core layers must not import infrastructure"
+```
 
 ## Conventions
 
 ### Naming
 
 - **Ports**: Interface names in `core/port/inbound/` and `core/port/outbound/`.
+- **Inbound ports**: `{Domain}Service` (e.g., `AuthService`, `HealthService`).
+- **Outbound ports**: `{Concern}` (e.g., `UserRepository`, `Health`).
 - **Adapters**: Concrete implementations in `adapter/{inbound,outbound}/{concern}/{technology}/{feature}/`.
-- **Services**: Application use cases in `app/{domain}/`.
+- **Application Services**: Implement inbound ports, live in `service/{domain}/`.
 - **DTOs**: Request/Response types in `adapter/inbound/rest/dto/`.
 
 ### Error Handling
@@ -41,8 +87,8 @@ Dependencies ALWAYS flow inward. Never reference outer layers from inner layers.
 - Available codes: `NOT_FOUND`, `CONFLICT`, `UNAUTHORIZED`, `FORBIDDEN`, `VALIDATION`, `INTERNAL`.
 - Constructors: `errs.NewNotFound()`, `errs.NewConflict()`, `errs.NewInternal(err, msg)`, etc.
 - HTTP translation happens in `adapter/inbound/rest/utils/errmap.go` via `MapErrorToHTTP()`.
-- NEVER return HTTP status codes from `core/` or `app/` layers.
-- Use `errs.GetCode(err)` to check error types (e.g., `errs.GetCode(err) == errs.ErrNotFound`) instead of `errors.Is()` against sentinel errors, since outbound adapters now return typed `DomainError`.
+- NEVER return HTTP status codes from `core/` or `service/` layers.
+- Use `errs.GetCode(err)` to check error types (e.g., `errs.GetCode(err) == errs.ErrNotFound`) instead of `errors.Is()` against sentinel errors.
 
 ### Mock Generation
 
@@ -73,24 +119,27 @@ make install          # go mod tidy && go mod vendor
 make docker-up        # start all services via Docker Compose
 make docker-down      # stop docker services
 make run-rest         # go run cmd/main.go rest
-go test ./...         # run all tests
-go build ./...        # verify compilation
-go vet ./...          # static analysis
+make verify           # generate mocks + build + vet + lint + test (all-in-one)
+make generate-mocks   # go generate ./internal/core/port/...
+make build            # go build ./...
+make vet              # go vet ./...
+make lint             # golangci-lint run ./...
+make test             # go test ./...
 ```
 
 ## Adding a New Feature
 
 1. Define domain entity in `internal/core/domain/entity/`.
 2. Define inbound port (service interface) in `internal/core/port/inbound/`.
-3. Define outbound port (repository interface) in `internal/core/port/outbound/`.
-4. Implement application service in `internal/app/{feature}/`.
+3. Define outbound ports (repository, etc.) in `internal/core/port/outbound/` — only for I/O dependencies.
+4. Implement service in `internal/service/{feature}/` — depend on ports, entities, and pkg/ utilities.
 5. Implement outbound adapter in `internal/adapter/outbound/{concern}/{tech}/{feature}/`.
 6. Implement inbound adapter (handler) in `internal/adapter/inbound/rest/handler/{feature}/`.
 7. Add DTO in `internal/adapter/inbound/rest/dto/`.
 8. Register route in `internal/adapter/inbound/rest/router/router.go`.
 9. Wire dependencies in `cmd/api/rest/cmd.go` (Composition Root).
 10. Generate mocks: `go generate ./internal/core/port/...`
-11. Write tests in `internal/app/{feature}/`.
+11. Write tests in `internal/service/{feature}/`.
 
 ## Key Dependencies
 

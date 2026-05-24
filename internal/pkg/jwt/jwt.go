@@ -6,13 +6,14 @@ import (
 	"log/slog"
 	"time"
 
+	"go-simple-template/internal/core/domain/entity"
 	"go-simple-template/internal/pkg/config"
 	errpkg "go-simple-template/internal/pkg/errs"
 
 	jwtgo "github.com/golang-jwt/jwt/v5"
 )
 
-func GenerateToken(payload UserCtx, isRefresh bool) (string, error) {
+func GenerateToken(payload entity.UserCtx, isRefresh bool) (string, error) {
 	var key []byte
 	var expirationTime time.Time
 

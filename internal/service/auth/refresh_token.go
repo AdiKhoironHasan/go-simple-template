@@ -23,14 +23,14 @@ func (s *auth) RefreshToken(ctx context.Context, request entity.AuthToken) (*ent
 		return nil, errpkg.NewUnauthorized(errpkg.ErrMsgInvalidToken)
 	}
 
-	refreshToken, err := jwt.ValidateToken(ctx, request.RefreshToken, true)
+	claims, err := jwt.ValidateToken(ctx, request.RefreshToken, true)
 	if err != nil {
-		slog.ErrorContext(ctx, "Invalid refresh token", slog.String("error", err.Error()))
+		slog.ErrorContext(ctx, "Invalid refresh token", slog.String(consts.Error, err.Error()))
 		return nil, errpkg.NewUnauthorized(errpkg.ErrMsgInvalidToken)
 	}
 
-	if refreshToken.ExpiresAt != nil {
-		ttl := time.Until(refreshToken.ExpiresAt.Time)
+	if claims.ExpiresAt != nil {
+		ttl := time.Until(claims.ExpiresAt.Time)
 		if ttl > 0 {
 			if blErr := s.tokenCache.Blacklist(ctx, request.RefreshToken, ttl); blErr != nil {
 				slog.ErrorContext(ctx, "Failed to blacklist old refresh token", slog.String(consts.Error, blErr.Error()))
@@ -38,21 +38,22 @@ func (s *auth) RefreshToken(ctx context.Context, request entity.AuthToken) (*ent
 		}
 	}
 
-	jwtPayload := jwt.UserCtx{
-		Id:    refreshToken.Id,
-		Email: refreshToken.Email,
-	}
+	payload := entity.UserCtx{Id: claims.UserCtx.Id, Email: claims.UserCtx.Email}
 
-	accessToken, newRefreshToken, err := s.generateAuthToken(ctx, jwtPayload)
+	accessToken, err := jwt.GenerateToken(payload, false)
 	if err != nil {
-		slog.ErrorContext(ctx, "Failed to generate new tokens", slog.String("error", err.Error()))
+		slog.ErrorContext(ctx, "Failed to generate access token", slog.String(consts.Error, err.Error()))
 		return nil, err
 	}
 
-	response := &entity.AuthToken{
-		AccessToken:  accessToken,
-		RefreshToken: newRefreshToken,
+	newRefreshToken, err := jwt.GenerateToken(payload, true)
+	if err != nil {
+		slog.ErrorContext(ctx, "Failed to generate refresh token", slog.String(consts.Error, err.Error()))
+		return nil, err
 	}
 
-	return response, nil
+	return &entity.AuthToken{
+		AccessToken:  accessToken,
+		RefreshToken: newRefreshToken,
+	}, nil
 }

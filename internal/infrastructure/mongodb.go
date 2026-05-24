@@ -28,7 +28,7 @@ func (a *mongodb) Connect(ctx context.Context) error {
 
 	client, err := mongo.Connect(ctx, clientOptions)
 	if err != nil {
-		slog.ErrorContext(ctx, "Failed to connect to MongoDB", slog.String("connection", a.connectionURL), slog.String(consts.Error, err.Error()))
+		slog.ErrorContext(ctx, "Failed to connect to MongoDB", slog.String("address", config.MongodbAddress()), slog.String("db", config.MongodbName()), slog.String(consts.Error, err.Error()))
 		return err
 	}
 
@@ -36,11 +36,11 @@ func (a *mongodb) Connect(ctx context.Context) error {
 
 	err = client.Ping(ctx, nil)
 	if err != nil {
-		slog.ErrorContext(ctx, "Failed to ping MongoDB", slog.String("connection", a.connectionURL), slog.String(consts.Error, err.Error()))
+		slog.ErrorContext(ctx, "Failed to ping MongoDB", slog.String("address", config.MongodbAddress()), slog.String("db", config.MongodbName()), slog.String(consts.Error, err.Error()))
 		return err
 	}
 
-	slog.InfoContext(ctx, "MongoDB connected", slog.String("connection", a.connectionURL))
+	slog.InfoContext(ctx, "MongoDB connected", slog.String("address", config.MongodbAddress()), slog.String("db", config.MongodbName()))
 
 	return nil
 }

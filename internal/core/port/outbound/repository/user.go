@@ -10,5 +10,4 @@ import (
 type UserRepository interface {
 	Insert(ctx context.Context, request entity.User) (*entity.User, error)
 	FindOne(ctx context.Context, request entity.User) (*entity.User, error)
-	Update(ctx context.Context, request entity.User) (*entity.User, error)
 }

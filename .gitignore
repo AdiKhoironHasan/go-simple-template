@@ -6,3 +6,4 @@ tmp/*
 .vscode
 vendor
 .claude
+.agents

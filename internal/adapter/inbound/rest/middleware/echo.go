@@ -3,7 +3,6 @@ package middleware
 import (
 	"context"
 	"log/slog"
-	"os"
 
 	"go-simple-template/internal/pkg/consts"
 
@@ -19,7 +18,7 @@ func MiddlewareLogger() echo.MiddlewareFunc {
 		HandleError: true,
 		Skipper:     skipper,
 		LogValuesFunc: func(c echo.Context, v middleware.RequestLoggerValues) error {
-			logger := slog.New(slog.NewJSONHandler(os.Stdout, nil))
+			logger := slog.Default()
 
 			attrs := []slog.Attr{
 				slog.String("uri", v.URI),

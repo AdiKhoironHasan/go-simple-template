@@ -6,38 +6,11 @@ import (
 	"testing"
 
 	"go-simple-template/internal/core/domain/entity"
-	cacheMocks "go-simple-template/internal/core/port/outbound/cache/mocks"
-	repoMocks "go-simple-template/internal/core/port/outbound/repository/mocks"
 
+	"github.com/samber/lo"
 	"github.com/stretchr/testify/assert"
 	"go.uber.org/mock/gomock"
 )
-
-type testDeps struct {
-	ctrl        *gomock.Controller
-	healthRepo  *repoMocks.MockHealth
-	healthCache *cacheMocks.MockHealth
-	svc         *service
-}
-
-func setupTest(t *testing.T) *testDeps {
-	t.Helper()
-
-	ctrl := gomock.NewController(t)
-	healthRepo := repoMocks.NewMockHealth(ctrl)
-	healthCache := cacheMocks.NewMockHealth(ctrl)
-	svc := &service{
-		healthRepo:  healthRepo,
-		healthCache: healthCache,
-	}
-
-	return &testDeps{
-		ctrl:        ctrl,
-		healthRepo:  healthRepo,
-		healthCache: healthCache,
-		svc:         svc,
-	}
-}
 
 func TestCheckHealth(t *testing.T) {
 	mongoErr := errors.New("mongo connection refused")
@@ -183,10 +156,7 @@ func TestCheckHealth(t *testing.T) {
 			deps := setupTest(t)
 			tt.mockSetup(deps)
 
-			ctx := context.Background()
-			if tt.ctx != nil {
-				ctx = tt.ctx()
-			}
+			ctx := lo.IfF(tt.ctx != nil, tt.ctx).ElseF(context.Background)
 
 			got, err := deps.svc.CheckHealth(ctx, tt.req)
 			tt.assertFn(t, got, err)

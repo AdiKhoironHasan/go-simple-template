@@ -3,18 +3,20 @@ package rest
 import (
 	"context"
 	"log"
+	"os"
+	"os/signal"
+	"syscall"
 
 	"go-simple-template/internal/adapter/inbound/rest/router"
 	"go-simple-template/internal/adapter/inbound/rest/server"
 	healthCache "go-simple-template/internal/adapter/outbound/cache/redis/health"
-	tokenCache "go-simple-template/internal/adapter/outbound/cache/redis/token"
+	tokenCacheAdapter "go-simple-template/internal/adapter/outbound/cache/redis/token"
 	healthRepo "go-simple-template/internal/adapter/outbound/repository/mongo/health"
-	healthService "go-simple-template/internal/app/health"
-	"go-simple-template/internal/infrastructure"
-
 	userRepo "go-simple-template/internal/adapter/outbound/repository/mongo/user"
-	authService "go-simple-template/internal/app/auth"
+	"go-simple-template/internal/infrastructure"
 	"go-simple-template/internal/pkg/config"
+	authService "go-simple-template/internal/service/auth"
+	healthService "go-simple-template/internal/service/health"
 )
 
 func Start(ctx context.Context) {
@@ -24,14 +26,19 @@ func Start(ctx context.Context) {
 	if err != nil {
 		log.Fatalf("Failed to connect to MongoDB: %v", err)
 	}
+	defer mongo.Disconnect(ctx)
 
-	redis := infrastructure.NewRedis(ctx)
-	redis.Connect(ctx)
+	redisClient := infrastructure.NewRedis(ctx)
+	err = redisClient.Connect(ctx)
+	if err != nil {
+		log.Fatalf("Failed to connect to Redis: %v", err)
+	}
+	defer redisClient.Disconnect(ctx)
 
 	//  Outbound Adapters (Driven)
 	healthRepo := healthRepo.New(mongo.Client)
-	healthCache := healthCache.NewCache(redis.Client)
-	tokenCache := tokenCache.NewCache(redis.Client)
+	healthCache := healthCache.NewCache(redisClient.Client)
+	tokenCache := tokenCacheAdapter.NewCache(redisClient.Client)
 	userRepo := userRepo.New(mongo.Client, config.MongodbName())
 
 	//  Application Services
@@ -45,6 +52,10 @@ func Start(ctx context.Context) {
 	}
 
 	srv := server.New(ctx, deps)
+
+	//  Graceful shutdown
+	ctx, stop := signal.NotifyContext(ctx, os.Interrupt, syscall.SIGTERM)
+	defer stop()
 
 	//  Run Server
 	if err := srv.Run(ctx); err != nil {
