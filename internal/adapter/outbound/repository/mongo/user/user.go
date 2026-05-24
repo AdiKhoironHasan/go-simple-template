@@ -2,7 +2,6 @@ package user
 
 import (
 	"go-simple-template/internal/adapter/outbound/repository/mongo/model"
-	"go-simple-template/internal/core/port/outbound/repository"
 	"go.mongodb.org/mongo-driver/mongo"
 )
 
@@ -11,7 +10,7 @@ type user struct {
 	collection *mongo.Collection
 }
 
-func New(client *mongo.Client, dbName string) repository.UserRepository {
+func New(client *mongo.Client, dbName string) *user {
 	return &user{
 		client:     client,
 		collection: client.Database(dbName).Collection(model.User{}.CollectionName()),

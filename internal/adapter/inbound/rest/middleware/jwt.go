@@ -5,7 +5,6 @@ import (
 	"strings"
 
 	"go-simple-template/internal/adapter/inbound/rest/dto"
-	"go-simple-template/internal/core/domain/entity"
 	"go-simple-template/internal/pkg/jwt"
 
 	ctxpkg "go-simple-template/internal/pkg/context"
@@ -37,10 +36,7 @@ func MiddlewareJWT() echo.MiddlewareFunc {
 			}
 
 			// Add the user to context
-			ctx := ctxpkg.SetUserCtx(c.Request().Context(), &entity.UserCtx{
-				Id:    claims.UserCtx.Id,
-				Email: claims.UserCtx.Email,
-			})
+			ctx := ctxpkg.SetUserCtx(c.Request().Context(), &claims.UserCtx)
 
 			c.SetRequest(c.Request().WithContext(ctx))
 

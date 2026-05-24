@@ -22,44 +22,27 @@ func (s *auth) Login(ctx context.Context, request entity.User) (*entity.AuthToke
 		return nil, err
 	}
 
-	// check if password is correct
 	if !crypto.CheckPasswordHash(request.Password, user.Password) {
 		slog.ErrorContext(ctx, "Incorrect password", slog.String("user_id", user.Id))
 		return nil, errpkg.NewUnauthorized(errpkg.ErrMsgInvalidCredentials)
 	}
 
-	jwtPayload := jwt.UserCtx{
-		Id:    user.Id,
-		Email: user.Email,
-	}
+	payload := entity.UserCtx{Id: user.Id, Email: user.Email}
 
-	// generate access token
-	accessToken, refreshToken, err := s.generateAuthToken(ctx, jwtPayload)
-	if err != nil {
-		slog.ErrorContext(ctx, "Failed to generate tokens", slog.String("error", err.Error()))
-		return nil, err
-	}
-
-	response := &entity.AuthToken{
-		AccessToken:  accessToken,
-		RefreshToken: refreshToken,
-	}
-
-	return response, nil
-}
-
-func (s *auth) generateAuthToken(ctx context.Context, payload jwt.UserCtx) (string, string, error) {
 	accessToken, err := jwt.GenerateToken(payload, false)
 	if err != nil {
-		slog.ErrorContext(ctx, "error generating access token", slog.String("error", err.Error()))
-		return "", "", err
+		slog.ErrorContext(ctx, "Failed to generate access token", slog.String("error", err.Error()))
+		return nil, err
 	}
 
 	refreshToken, err := jwt.GenerateToken(payload, true)
 	if err != nil {
-		slog.ErrorContext(ctx, "error generating refresh token", slog.String("error", err.Error()))
-		return "", "", err
+		slog.ErrorContext(ctx, "Failed to generate refresh token", slog.String("error", err.Error()))
+		return nil, err
 	}
 
-	return accessToken, refreshToken, nil
+	return &entity.AuthToken{
+		AccessToken:  accessToken,
+		RefreshToken: refreshToken,
+	}, nil
 }

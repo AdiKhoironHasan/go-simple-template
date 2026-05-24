@@ -1,0 +1,35 @@
+version: "2"
+
+linters:
+  enable:
+    - errcheck
+    - govet
+    - ineffassign
+    - staticcheck
+    - unused
+    - depguard
+  settings:
+    depguard:
+      rules:
+        service-layer:
+          files:
+            - $all
+            - "!**/cmd/**"
+            - "!**/adapter/**"
+            - "!**/infrastructure/**"
+            - "!**/pkg/**"
+            - "!**/mocks/**"
+          deny:
+            - pkg: "go-simple-template/internal/adapter"
+              desc: "service and core layers must not import adapter"
+            - pkg: "go-simple-template/internal/infrastructure"
+              desc: "service and core layers must not import infrastructure"
+
+  exclusions:
+    rules:
+      - path: internal/adapter/inbound/rest/dto/validation\.go
+        linters:
+          - unused
+
+run:
+  timeout: 3m

@@ -35,8 +35,7 @@ func newTlsClient(opts red.Options) *red.Client {
 	return red.NewClient(&opts)
 }
 
-func (a *redis) Connect(ctx context.Context) {
-
+func (a *redis) Connect(ctx context.Context) error {
 	var client *red.Client
 	rdbOpts := &red.Options{
 		Addr:     a.connectionURL,
@@ -52,9 +51,16 @@ func (a *redis) Connect(ctx context.Context) {
 		client = red.NewClient(rdbOpts)
 	}
 
-	slog.InfoContext(ctx, "Redis connected", slog.String("connected to", a.connectionURL))
+	// Ping to verify connection
+	if err := client.Ping(ctx).Err(); err != nil {
+		slog.ErrorContext(ctx, "Failed to connect to Redis", slog.String("addr", a.connectionURL), slog.String(consts.Error, err.Error()))
+		return err
+	}
+
+	slog.InfoContext(ctx, "Redis connected", slog.String("addr", a.connectionURL))
 
 	a.Client = client
+	return nil
 }
 
 func (a *redis) Disconnect(ctx context.Context) {
